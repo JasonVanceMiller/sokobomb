@@ -19,16 +19,16 @@ game_state gs;
 game_state_history* gsh;
 
 int main() {
-    levels[0] = level_load(first);
-    levels[1] = level_load(gap);
-    levels[2] = level_load(jump);
-    levels[3] = level_load(box);
-    levels[4] = level_load(box2);
-    levels[5] = level_load(stuck);
-    levels[6] = level_load(good);
-    levels[7] = level_load(bad);
-    levels[8] = level_load(pinch);
-    levels[9] = level_load(tennis);
+    levels[0] = level_load(level_first);
+    levels[1] = level_load(level_gap);
+    levels[2] = level_load(level_jump);
+    levels[3] = level_load(level_box);
+    levels[4] = level_load(level_box2);
+    levels[5] = level_load(level_stuck);
+    levels[6] = level_load(level_good);
+    levels[7] = level_load(level_bad);
+    levels[8] = level_load(level_pinch);
+    levels[9] = level_load(level_tennis);
     level_index = 0;
     gs = levels[0];
     gsh = NULL;
