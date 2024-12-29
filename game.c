@@ -12,10 +12,10 @@ game_state level_load(const char* level){
     int width;
     int cells = 0;
     for (int i = 0; i < len; i++){
-        if (level[i] == '\n'){ // && level[i+1] == '\n') {
+        if (level[i] == '\n'){
             height++;
         }
-        if (level[i] != '\n' && level[i] != '\0'){ // && level[i+1] == '\n') {
+        if (level[i] != '\n' && level[i] != '\0'){
             cells++;
         }
     }
@@ -218,6 +218,24 @@ Color entity_draw_dispatch(int loc, int x, int y, int cell_size, entity_id e){
             DrawLineEx((Vector2){x + cell_size / 2, y + cell_size / 2}, (Vector2){x + cell_size * 0.8, y + cell_size * 0.2}, cell_size * 0.1, BROWN);
             DrawLineEx((Vector2){x + cell_size / 2, y + cell_size / 2}, (Vector2){x + cell_size * 0.7, y + cell_size * 0.3}, cell_size * 0.3, BLACK);
             DrawCircle(x + cell_size / 2, y + cell_size / 2, cell_size * 0.25, BLACK);
+            DrawTriangle(
+                (Vector2){x + cell_size * 0.55, y + cell_size * 0.5},
+                (Vector2){x + cell_size * 0.65, y + cell_size * 0.5},
+                (Vector2){x + cell_size * 0.6, y + cell_size * 0.2},
+                LIGHTGRAY
+            );            
+            DrawTriangle(
+                (Vector2){x + cell_size * 0.25, y + cell_size * 0.4},
+                (Vector2){x + cell_size * 0.35, y + cell_size * 0.4},
+                (Vector2){x + cell_size * 0.3, y + cell_size * 0.1},
+                LIGHTGRAY
+            );            
+            DrawTriangle(
+                (Vector2){x + cell_size * 0.45, y + cell_size * 0.8},
+                (Vector2){x + cell_size * 0.55, y + cell_size * 0.8},
+                (Vector2){x + cell_size * 0.5, y + cell_size * 0.5},
+                LIGHTGRAY
+            );            
         break;
         case wall: 
             DrawRectangle(x, y, cell_size, cell_size, LIGHTGRAY); 
@@ -266,7 +284,6 @@ bool state_update(action move){
         return false;
     }
     if (move == undo) {
-        printf("HERE\n");
         gs = game_state_history_pop();
         return false;
     }
@@ -429,6 +446,7 @@ void explode (int loc){
 void gravity(){
     for (int loc = 0; loc < gs.width * gs.height; loc++) {
         switch (gs.static_entities[loc]) {
+            case pit_bomb_box: 
             case pit: 
                 switch (gs.dynamic_entities[loc]) {
                     case boomer:
@@ -442,6 +460,7 @@ void gravity(){
                         gs.static_entities[loc] = pit_metal_box;
                     break;
                     case bomb_box:
+                        gs.static_entities[loc] = pit_bomb_box;
                     break;
                 }
                 gs.dynamic_entities[loc] = empty;
