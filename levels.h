@@ -2,7 +2,7 @@ const char* level_first =
 ".......\n"
 "WWWWWWW\n"
 "W_____W\n"
-"W_B_G_W\n"
+"W_B_g_W\n"
 "W_____W\n"
 "WWWWWWW\n"
 ".......";
@@ -11,7 +11,7 @@ const char* level_gap =
 ".......\n"
 "WWWWWWW\n"
 "W__P__W\n"
-"W_BPG_W\n"
+"W_BPg_W\n"
 "W__P__W\n"
 "WWWWWWW\n"
 ".......";
@@ -28,14 +28,14 @@ const char* level_jump =
 "W___PPP___W\n"
 "WPPPWWWWWWW\n"
 "WPPPW......\n"
-"W_G_W......\n"
+"W_g_W......\n"
 "WPPPW......\n"
 "WWWWW......";
 
 const char* level_box = 
 "WWWWWWW\n"
 "W_____W\n"
-"W_B_G_W\n"
+"W_B_g_W\n"
 "W_____W\n"
 "W_p_m_W\n"
 "W_____W\n"
@@ -44,7 +44,7 @@ const char* level_box =
 const char* level_box2 = 
 "WWWWWWW\n"
 "W__P__W\n"
-"W_BPG_W\n"
+"W_BPg_W\n"
 "Wm_P__W\n"
 "W_pPm_W\n"
 "W__P__W\n"
@@ -53,7 +53,7 @@ const char* level_box2 =
 const char* level_stuck = 
 ".WWWWW.\n"
 ".W_B_W.\n"
-"WW_G_WW\n"
+"WW_g_WW\n"
 "W_____W\n"
 "W__p__W\n"
 "W__m__W\n"
@@ -64,7 +64,7 @@ const char* level_good =
 ".....WWW.\n"
 "..WWWW_W.\n"
 "..W____W.\n"
-"WWW_GP_WW\n"
+"WWW_gP_WW\n"
 "WpP_B___W\n"
 "W_m____WW\n"
 "WWWWW_WW.\n"
@@ -73,7 +73,7 @@ const char* level_good =
 const char* level_bad = 
 "...........\n"
 "WWWWWWWWWWW\n"
-"WGPP_bmPPpW\n"
+"WgPP_bmPPpW\n"
 "WWWWW_WWWWW\n"
 "WB_bb_mPPpW\n"
 "WWWWWWWWWWW\n"
@@ -85,7 +85,7 @@ const char* level_pinch =
 "WWWW.........\n"
 "W__WWWWW.....\n"
 "W_B_b__WWWWWW\n"
-"W__PPP__PPGPW\n"
+"W__PPP__PPgPW\n"
 "WWWWWWWWWWWWW\n"
 ".............\n"
 ".............";
@@ -95,7 +95,7 @@ const char* level_tennis =
 ".WWWWW...WWWWW.\n"
 ".W___W...W___W.\n"
 "WW_m_WWWWW_m_WW\n"
-"WG____PPPp___BW\n"
+"Wg____PPPp___BW\n"
 "WW_p_WWWWW_b_WW\n"
 ".W___W...W___W.\n"
 ".WWWWW...WWWWW.\n"

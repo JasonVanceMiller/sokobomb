@@ -69,9 +69,13 @@ game_state level_load(const char* level){
                 out_gs.static_entities[loc] = pit;
                 out_gs.dynamic_entities[loc] = none;
             break;
-            case 'G':
+            case 'g':
                 out_gs.static_entities[loc] = goal;
                 out_gs.dynamic_entities[loc] = none;
+            break;
+            case 'G':
+                out_gs.static_entities[loc] = goal;
+                out_gs.dynamic_entities[loc] = boomer;
             break;
             default: 
                 loc--;
