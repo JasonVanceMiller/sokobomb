@@ -34,52 +34,86 @@ game_state level_load(const char* level){
     for (int loc = 0; loc < cells; loc++){
         switch (level[i]) {
             case '.':
-                out_gs.static_entities[loc] = empty;
-                out_gs.dynamic_entities[loc] = empty;
+                out_gs.lower_entities[loc] = empty;
+                out_gs.middle_entities[loc] = empty;
+                out_gs.upper_entities[loc] = empty;
             break;
             case '_':
-                out_gs.static_entities[loc] = ground;
-                out_gs.dynamic_entities[loc] = empty;
+                out_gs.lower_entities[loc] = ground;
+                out_gs.middle_entities[loc] = empty;
+                out_gs.upper_entities[loc] = empty;
             break;
             case 'W':
-                out_gs.static_entities[loc] = wall;
-                out_gs.dynamic_entities[loc] = empty;
+                out_gs.lower_entities[loc] = ground;
+                out_gs.middle_entities[loc] = empty;
+                out_gs.upper_entities[loc] = wall;
             break;
             case 'B':
-                out_gs.static_entities[loc] = ground;
-                out_gs.dynamic_entities[loc] = boomer;
+                out_gs.lower_entities[loc] = ground;
+                out_gs.middle_entities[loc] = empty;
+                out_gs.upper_entities[loc] = boomer;
             break;
             case 'w':
-                out_gs.static_entities[loc] = ground;
-                out_gs.dynamic_entities[loc] = wood_box;
+                out_gs.lower_entities[loc] = ground;
+                out_gs.middle_entities[loc] = empty;
+                out_gs.upper_entities[loc] = wood_box;
             break;
             case 'm':
-                out_gs.static_entities[loc] = ground;
-                out_gs.dynamic_entities[loc] = metal_box;
+                out_gs.lower_entities[loc] = ground;
+                out_gs.middle_entities[loc] = empty;
+                out_gs.upper_entities[loc] = metal_box;
             break;
             case 'b':
-                out_gs.static_entities[loc] = ground;
-                out_gs.dynamic_entities[loc] = bomb_box;
-            break;
-            case 'p':
-                out_gs.static_entities[loc] = pressure_plate;
-                out_gs.dynamic_entities[loc] = none;
+                out_gs.lower_entities[loc] = ground;
+                out_gs.middle_entities[loc] = empty;
+                out_gs.upper_entities[loc] = bomb_box;
             break;
             case 'P':
-                out_gs.static_entities[loc] = pit;
-                out_gs.dynamic_entities[loc] = none;
+                out_gs.lower_entities[loc] = pit;
+                out_gs.middle_entities[loc] = empty;
+                out_gs.upper_entities[loc] = none;
+            break;
+            case '#':
+                out_gs.lower_entities[loc] = goal;
+                out_gs.middle_entities[loc] = empty;
+                out_gs.upper_entities[loc] = none;
+            break;
+            case '%':
+                out_gs.lower_entities[loc] = goal;
+                out_gs.middle_entities[loc] = red_marker;
+                out_gs.upper_entities[loc] = none;
+            break;
+            case 'r':
+                out_gs.lower_entities[loc] = red_plate;
+                out_gs.middle_entities[loc] = empty;
+                out_gs.upper_entities[loc] = none;
+            break;
+            case 'R':
+                out_gs.lower_entities[loc] = ground;
+                out_gs.middle_entities[loc] = red_marker;
+            break;
+            case 'y':
+                out_gs.lower_entities[loc] = yellow_plate;
+                out_gs.middle_entities[loc] = empty;
+                out_gs.upper_entities[loc] = none;
+            break;
+            case 'Y':
+                out_gs.lower_entities[loc] = ground;
+                out_gs.middle_entities[loc] = yellow_marker;
             break;
             case 'g':
-                out_gs.static_entities[loc] = goal;
-                out_gs.dynamic_entities[loc] = none;
+                out_gs.lower_entities[loc] = green_plate;
+                out_gs.middle_entities[loc] = empty;
+                out_gs.upper_entities[loc] = none;
             break;
             case 'G':
-                out_gs.static_entities[loc] = goal;
-                out_gs.dynamic_entities[loc] = boomer;
+                out_gs.lower_entities[loc] = ground;
+                out_gs.middle_entities[loc] = green_marker;
             break;
             default: 
                 loc--;
                 if (i >= len) {
+                    printf("Error loading level\n");
                     exit(1);
                 }
             break;
@@ -101,157 +135,152 @@ void state_draw(){
     for (int x = 0; x < gs.width; x++){
         for (int y = 0; y < gs.height; y++){
             int loc = x + y * gs.width;
-            entity_draw_dispatch(loc, starting_x + x * cell_size, starting_y + y * cell_size, cell_size, gs.static_entities[x + y * gs.width]);
-            entity_draw_dispatch(loc, starting_x + x * cell_size, starting_y + y * cell_size, cell_size, gs.dynamic_entities[x + y * gs.width]);
+            entity_draw_dispatch(loc, starting_x + x * cell_size, starting_y + y * cell_size, cell_size, gs.lower_entities[x + y * gs.width]);
+            entity_draw_dispatch(loc, starting_x + x * cell_size, starting_y + y * cell_size, cell_size, gs.upper_entities[x + y * gs.width]);
+            entity_draw_dispatch(loc, starting_x + x * cell_size, starting_y + y * cell_size, cell_size, gs.middle_entities[x + y * gs.width]);
         }
     }
 }
-
+void draw_bomb(int x, int y, int cell_size){
+    DrawLineEx((Vector2){x + cell_size / 2, y + cell_size / 2}, (Vector2){x + cell_size * 0.8, y + cell_size * 0.2}, cell_size * 0.1, BROWN);
+    DrawLineEx((Vector2){x + cell_size / 2, y + cell_size / 2}, (Vector2){x + cell_size * 0.7, y + cell_size * 0.3}, cell_size * 0.3, BLACK);
+    DrawCircle(x + cell_size / 2, y + cell_size / 2, cell_size * 0.25, BLACK);
+}
+void draw_pit_bottom(int x, int y, int cell_size){
+    DrawRectangle(x, y, cell_size, cell_size, WHITE); 
+    DrawRectangle(x+1, y+1, cell_size-2, cell_size-2, BLACK); 
+}
+void draw_pit_spikes(int x, int y, int cell_size){
+    DrawTriangle(
+        (Vector2){x + cell_size * 0.55, y + cell_size * 0.5},
+        (Vector2){x + cell_size * 0.65, y + cell_size * 0.5},
+        (Vector2){x + cell_size * 0.6, y + cell_size * 0.2},
+        LIGHTGRAY
+    );            
+    DrawTriangle(
+        (Vector2){x + cell_size * 0.25, y + cell_size * 0.4},
+        (Vector2){x + cell_size * 0.35, y + cell_size * 0.4},
+        (Vector2){x + cell_size * 0.3, y + cell_size * 0.1},
+        LIGHTGRAY
+    );            
+    DrawTriangle(
+        (Vector2){x + cell_size * 0.45, y + cell_size * 0.8},
+        (Vector2){x + cell_size * 0.55, y + cell_size * 0.8},
+        (Vector2){x + cell_size * 0.5, y + cell_size * 0.5},
+        LIGHTGRAY
+    );            
+}
+void draw_pit_blood(int x, int y, int cell_size){
+    DrawTriangle(
+        (Vector2){x + cell_size * 0.575, y + cell_size * 0.35},
+        (Vector2){x + cell_size * 0.625, y + cell_size * 0.35},
+        (Vector2){x + cell_size * 0.6, y + cell_size * 0.2},
+        RED
+    );            
+    DrawTriangle(
+        (Vector2){x + cell_size * 0.275, y + cell_size * 0.25},
+        (Vector2){x + cell_size * 0.325, y + cell_size * 0.25},
+        (Vector2){x + cell_size * 0.3, y + cell_size * 0.1},
+        RED
+    );            
+    DrawTriangle(
+        (Vector2){x + cell_size * 0.475, y + cell_size * 0.65},
+        (Vector2){x + cell_size * 0.525, y + cell_size * 0.65},
+        (Vector2){x + cell_size * 0.5, y + cell_size * 0.5},
+        RED
+    );            
+}
+void draw_marker(int x, int y, int cell_size){
+    DrawRectangle(x, y, cell_size, cell_size, WHITE); 
+    DrawRectangle(x+1, y+1, cell_size-2, cell_size-2, BEIGE); 
+}
+void draw_plate(int loc, int x, int y, int cell_size, Color color){
+    draw_marker(x, y, cell_size);
+    if(gs.upper_entities[loc] == boomer || gs.upper_entities[loc] == metal_box || gs.upper_entities[loc] == metal_box || gs.upper_entities[loc] == wood_box || gs.upper_entities[loc] == bomb_box){
+        DrawRectangle(x+1, y+1, cell_size-2, cell_size-2, PURPLE); 
+    }
+    DrawRectangle(x+5, y+5, cell_size-10, cell_size-10, color); 
+}
 Color entity_draw_dispatch(int loc, int x, int y, int cell_size, entity_id e){
     switch(e){
         case ground: 
-            DrawRectangle(x, y, cell_size, cell_size, WHITE); 
-            DrawRectangle(x+1, y+1, cell_size-2, cell_size-2, BEIGE); 
+            draw_marker(x, y, cell_size);
             //ALREADY DRAWN
         break;
         case boomer: 
             DrawCircle(x + cell_size / 2, y + cell_size / 2, cell_size * 0.45 , DARKPURPLE);
             if (gs.holding_bomb) {
-                //DrawRectangle(x + cell_size / 4, y + cell_size / 4, cell_size / 2, cell_size / 2, BLACK);
-                DrawLineEx((Vector2){x + cell_size / 2, y + cell_size / 2}, (Vector2){x + cell_size * 0.8, y + cell_size * 0.2}, cell_size * 0.1, BROWN);
-                DrawLineEx((Vector2){x + cell_size / 2, y + cell_size / 2}, (Vector2){x + cell_size * 0.7, y + cell_size * 0.3}, cell_size * 0.3, BLACK);
-                DrawCircle(x + cell_size / 2, y + cell_size / 2, cell_size * 0.25, BLACK);
+                draw_bomb(x, y, cell_size);
             }
         break;
         case bomb: 
-            DrawLineEx((Vector2){x + cell_size / 2, y + cell_size / 2}, (Vector2){x + cell_size * 0.8, y + cell_size * 0.2}, cell_size * 0.1, BROWN);
-            DrawLineEx((Vector2){x + cell_size / 2, y + cell_size / 2}, (Vector2){x + cell_size * 0.7, y + cell_size * 0.3}, cell_size * 0.3, BLACK);
-            DrawCircle(x + cell_size / 2, y + cell_size / 2, cell_size * 0.25, BLACK);
+            draw_bomb(x, y, cell_size);
             //DrawRectangle(x + cell_size / 4, y + cell_size / 4, cell_size / 2, cell_size / 2, BLACK);
         break;
         case goal: 
-            DrawRectangle(x, y, cell_size, cell_size, WHITE); 
-            DrawRectangle(x+1, y+1, cell_size-2, cell_size-2, BEIGE); 
-
-            if(check_plates()){
-                DrawCircle(x + cell_size / 2, y + cell_size / 2, cell_size / 2, LIME);
-                break;
-            }
-            if(gs.dynamic_entities[loc] == boomer && !check_win()){
-                DrawCircle(x + cell_size / 2, y + cell_size / 2, cell_size / 2, RED);
-                break;
-            }
-            DrawCircle(x + cell_size / 2, y + cell_size / 2, cell_size / 2, GOLD);
+            draw_marker(x, y, cell_size);
+            DrawCircle(x + cell_size / 2, y + cell_size / 2, cell_size * 0.48 , DARKPURPLE);
+            DrawCircle(x + cell_size / 2, y + cell_size / 2, cell_size * 0.40 , BEIGE);
 
         break;
         case pit: 
-            DrawRectangle(x, y, cell_size, cell_size, WHITE); 
-            DrawRectangle(x+1, y+1, cell_size-2, cell_size-2, BLACK); 
-            DrawTriangle(
-                (Vector2){x + cell_size * 0.55, y + cell_size * 0.5},
-                (Vector2){x + cell_size * 0.65, y + cell_size * 0.5},
-                (Vector2){x + cell_size * 0.6, y + cell_size * 0.2},
-                LIGHTGRAY
-            );            
-            DrawTriangle(
-                (Vector2){x + cell_size * 0.25, y + cell_size * 0.4},
-                (Vector2){x + cell_size * 0.35, y + cell_size * 0.4},
-                (Vector2){x + cell_size * 0.3, y + cell_size * 0.1},
-                LIGHTGRAY
-            );            
-            DrawTriangle(
-                (Vector2){x + cell_size * 0.45, y + cell_size * 0.8},
-                (Vector2){x + cell_size * 0.55, y + cell_size * 0.8},
-                (Vector2){x + cell_size * 0.5, y + cell_size * 0.5},
-                LIGHTGRAY
-            );            
+            draw_pit_bottom(x, y, cell_size);
+            draw_pit_spikes(x, y, cell_size);
         break;
         case pit_bloody: 
-            DrawRectangle(x, y, cell_size, cell_size, WHITE); 
-            DrawRectangle(x+1, y+1, cell_size-2, cell_size-2, BLACK); 
+            draw_pit_bottom(x, y, cell_size);
             DrawCircle(x + cell_size / 2, y + cell_size / 2, cell_size * 0.45 , DARKPURPLE);
-            DrawTriangle(
-                (Vector2){x + cell_size * 0.55, y + cell_size * 0.5},
-                (Vector2){x + cell_size * 0.65, y + cell_size * 0.5},
-                (Vector2){x + cell_size * 0.6, y + cell_size * 0.2},
-                LIGHTGRAY
-            );            
-            DrawTriangle(
-                (Vector2){x + cell_size * 0.25, y + cell_size * 0.4},
-                (Vector2){x + cell_size * 0.35, y + cell_size * 0.4},
-                (Vector2){x + cell_size * 0.3, y + cell_size * 0.1},
-                LIGHTGRAY
-            );            
-            DrawTriangle(
-                (Vector2){x + cell_size * 0.45, y + cell_size * 0.8},
-                (Vector2){x + cell_size * 0.55, y + cell_size * 0.8},
-                (Vector2){x + cell_size * 0.5, y + cell_size * 0.5},
-                LIGHTGRAY
-            );            
-            DrawTriangle(
-                (Vector2){x + cell_size * 0.575, y + cell_size * 0.35},
-                (Vector2){x + cell_size * 0.625, y + cell_size * 0.35},
-                (Vector2){x + cell_size * 0.6, y + cell_size * 0.2},
-                RED
-            );            
-            DrawTriangle(
-                (Vector2){x + cell_size * 0.275, y + cell_size * 0.25},
-                (Vector2){x + cell_size * 0.325, y + cell_size * 0.25},
-                (Vector2){x + cell_size * 0.3, y + cell_size * 0.1},
-                RED
-            );            
-            DrawTriangle(
-                (Vector2){x + cell_size * 0.475, y + cell_size * 0.65},
-                (Vector2){x + cell_size * 0.525, y + cell_size * 0.65},
-                (Vector2){x + cell_size * 0.5, y + cell_size * 0.5},
-                RED
-            );            
+            draw_pit_spikes(x, y, cell_size);
+            draw_pit_blood(x, y, cell_size);
         break;
         case pit_wood_box: 
         break;
         case pit_metal_box: 
-            DrawRectangle(x, y, cell_size, cell_size, WHITE); 
-            DrawRectangle(x+1, y+1, cell_size-2, cell_size-2, BLACK); 
+            draw_pit_bottom(x, y, cell_size);
             DrawRectangle(x+10, y+10, cell_size-20, cell_size-20, GRAY); 
             DrawRectangle(x+20, y+20, cell_size-40, cell_size-40, DARKGRAY); 
         break;
         case pit_bomb_box: 
-            DrawRectangle(x, y, cell_size, cell_size, WHITE); 
-            DrawRectangle(x+1, y+1, cell_size-2, cell_size-2, BLACK); 
+            draw_pit_bottom(x, y, cell_size);
             DrawRectangle(x+10, y+10, cell_size-20, cell_size-20, MAROON); 
-            DrawLineEx((Vector2){x + cell_size / 2, y + cell_size / 2}, (Vector2){x + cell_size * 0.8, y + cell_size * 0.2}, cell_size * 0.1, BROWN);
-            DrawLineEx((Vector2){x + cell_size / 2, y + cell_size / 2}, (Vector2){x + cell_size * 0.7, y + cell_size * 0.3}, cell_size * 0.3, BLACK);
-            DrawCircle(x + cell_size / 2, y + cell_size / 2, cell_size * 0.25, BLACK);
-            DrawTriangle(
-                (Vector2){x + cell_size * 0.55, y + cell_size * 0.5},
-                (Vector2){x + cell_size * 0.65, y + cell_size * 0.5},
-                (Vector2){x + cell_size * 0.6, y + cell_size * 0.2},
-                LIGHTGRAY
-            );            
-            DrawTriangle(
-                (Vector2){x + cell_size * 0.25, y + cell_size * 0.4},
-                (Vector2){x + cell_size * 0.35, y + cell_size * 0.4},
-                (Vector2){x + cell_size * 0.3, y + cell_size * 0.1},
-                LIGHTGRAY
-            );            
-            DrawTriangle(
-                (Vector2){x + cell_size * 0.45, y + cell_size * 0.8},
-                (Vector2){x + cell_size * 0.55, y + cell_size * 0.8},
-                (Vector2){x + cell_size * 0.5, y + cell_size * 0.5},
-                LIGHTGRAY
-            );            
+            draw_bomb(x, y, cell_size);
+            draw_pit_spikes(x, y, cell_size);
         break;
         case wall: 
-            DrawRectangle(x, y, cell_size, cell_size, LIGHTGRAY); 
+            DrawRectangle(x, y, cell_size, cell_size, GRAY); 
         break;
-        case pressure_plate: 
-            DrawRectangle(x, y, cell_size, cell_size, WHITE); 
-            DrawRectangle(x+1, y+1, cell_size-2, cell_size-2, BEIGE); 
-            if(gs.dynamic_entities[loc] == boomer || gs.dynamic_entities[loc] == metal_box || gs.dynamic_entities[loc] == metal_box || gs.dynamic_entities[loc] == wood_box || gs.dynamic_entities[loc] == bomb_box){
-                DrawRectangle(x+5, y+5, cell_size-10, cell_size-10, LIME); 
-            }else{
-                DrawRectangle(x+5, y+5, cell_size-10, cell_size-10, GOLD); 
-            }
+        case red_plate: 
+            draw_plate(loc, x, y, cell_size, RED);
+        break;
+        case yellow_plate: 
+            draw_plate(loc, x, y, cell_size, GOLD);
+        break;
+        case green_plate: 
+            draw_plate(loc, x, y, cell_size, DARKGREEN);
+        break;
+        case red_marker: 
+            DrawRectangleLinesEx((Rectangle){x+1, y+1, cell_size-2, cell_size-2}, 10, RED);
+        break;
+        case yellow_marker: 
+            DrawRectangleLinesEx((Rectangle){x+1, y+1, cell_size-2, cell_size-2}, 10, GOLD);
+        break;
+        case green_marker: 
+            DrawRectangleLinesEx((Rectangle){x+1, y+1, cell_size-2, cell_size-2}, 10, DARKGREEN);
+        break;
+        case red_wall: 
+            DrawRectangleLinesEx((Rectangle){x+1, y+1, cell_size-2, cell_size-2}, 10, RED);
+            DrawLineEx((Vector2){x + 4, y + 4}, (Vector2){x + cell_size - 8, y + cell_size - 8}, cell_size * 0.05, RED);
+            DrawLineEx((Vector2){x + 4, y + cell_size - 8}, (Vector2){x + cell_size - 8, y + 4}, cell_size * 0.05, RED);
+        break;
+        case yellow_wall: 
+            DrawRectangleLinesEx((Rectangle){x+1, y+1, cell_size-2, cell_size-2}, 10, GOLD);
+            DrawLineEx((Vector2){x + 4, y + 4}, (Vector2){x + cell_size - 8, y + cell_size - 8}, cell_size * 0.05, GOLD);
+            DrawLineEx((Vector2){x + 4, y + cell_size - 8}, (Vector2){x + cell_size - 8, y + 4}, cell_size * 0.05, GOLD);
+        break;
+        case green_wall: 
+            DrawRectangleLinesEx((Rectangle){x+1, y+1, cell_size-2, cell_size-2}, 10, DARKGREEN);
+            DrawLineEx((Vector2){x + 4, y + 4}, (Vector2){x + cell_size - 8, y + cell_size - 8}, cell_size * 0.05, DARKGREEN);
+            DrawLineEx((Vector2){x + 4, y + cell_size - 8}, (Vector2){x + cell_size - 8, y + 4}, cell_size * 0.05, DARKGREEN);
         break;
         case wood_box: 
             DrawRectangle(x+10, y+10, cell_size-20, cell_size-20, BROWN); 
@@ -259,19 +288,13 @@ Color entity_draw_dispatch(int loc, int x, int y, int cell_size, entity_id e){
         case metal_box: 
             DrawRectangle(x+10, y+10, cell_size-20, cell_size-20, GRAY); 
             DrawRectangle(x+20, y+20, cell_size-40, cell_size-40, DARKGRAY); 
-            //DrawCircle(x + cell_size * 0.7, y + cell_size *0.7, cell_size * 0.1, DARKGRAY);
-            //DrawCircle(x + cell_size * 0.3, y + cell_size *0.7, cell_size * 0.1, DARKGRAY);
-            //DrawCircle(x + cell_size * 0.3, y + cell_size *0.3, cell_size * 0.1, DARKGRAY);
-            //DrawCircle(x + cell_size * 0.7, y + cell_size *0.3, cell_size * 0.1, DARKGRAY);
         break;
         case bomb_box: 
             DrawRectangle(x+10, y+10, cell_size-20, cell_size-20, MAROON); 
-            DrawLineEx((Vector2){x + cell_size / 2, y + cell_size / 2}, (Vector2){x + cell_size * 0.8, y + cell_size * 0.2}, cell_size * 0.1, BROWN);
-            DrawLineEx((Vector2){x + cell_size / 2, y + cell_size / 2}, (Vector2){x + cell_size * 0.7, y + cell_size * 0.3}, cell_size * 0.3, BLACK);
-            DrawCircle(x + cell_size / 2, y + cell_size / 2, cell_size * 0.25, BLACK);
+            draw_bomb(x, y, cell_size);
         break;
         default: 
-            //NOT GOOD BECAUSE MOST OF DYNAMIC LAYER IS EMPTY
+            //NOT GOOD BECAUSE MOST OF upper LAYER IS EMPTY
             //DrawRectangle(x, y, cell_size, cell_size, PINK); 
         break;
 
@@ -281,23 +304,25 @@ Color entity_draw_dispatch(int loc, int x, int y, int cell_size, entity_id e){
 //MOVEMENT 
 
 //return true if error
-bool state_update(action move){
+bool state_move(action move){
     if (move == reset) {
         game_state_history_push(gs);
         gs = levels[level_index];
+        state_update();
         return false;
     }
     if (move == undo) {
         gs = game_state_history_pop();
         return false;
     }
-    if (move == level_skip) {
+    if (move == level_next) {
         level_index++;
         if (level_index >= sizeof(levels) / sizeof(game_state)) {
             level_index = (sizeof(levels) / sizeof(game_state)) - 1;
         }
         gs = levels[level_index];
         game_state_history_clear();
+        state_update();
         return false;
     }
     if (move == level_previous) {
@@ -307,12 +332,13 @@ bool state_update(action move){
         }
         gs = levels[level_index];
         game_state_history_clear();
+        state_update();
         return false;
     }
 
     int loc = 0;
     for (; loc < gs.width * gs.height; loc++){
-        if (gs.dynamic_entities[loc] == boomer) {
+        if (gs.upper_entities[loc] == boomer) {
             goto found;
         }
     }
@@ -323,28 +349,36 @@ found:
         game_state_history_push(gs);
     }
     if (move == up) {
-        push(loc, -1 * gs.width);
-        gravity();
+        if (!push(loc, -1 * gs.width)){
+            game_state_history_pop();
+        }
+        state_update();
         return false;
     }
     if (move == down) {
-        push(loc, gs.width);
-        gravity();
+        if (!push(loc, gs.width)){
+			game_state_history_pop();
+        }
+        state_update();
         return false;
     }
     if (move == left) {
-        push(loc, -1);
-        gravity();
+        if (!push(loc, -1)){
+			game_state_history_pop();
+        }
+        state_update();
         return false;
     }
     if (move == right) {
-        push(loc, 1);
-        gravity();
+        if (!push(loc, 1)){
+			game_state_history_pop();
+        }
+        state_update();
         return false;
     }
     if (move == interact) {
         for (int i = 0; i < gs.width * gs.height; i++){
-            if (gs.dynamic_entities[i] == bomb) {
+            if (gs.upper_entities[i] == bomb) {
                 explode(i);
                 return false; //TODO SHOULD BE ONLY ONE BOMB?
             }
@@ -357,8 +391,8 @@ found:
 bool push(int loc, int offset){
     if (push_wrapped(loc, offset, 0)){
         if (gs.holding_bomb) {
-            if (gs.dynamic_entities[loc] == empty) {
-                gs.dynamic_entities[loc] = bomb;
+            if (gs.upper_entities[loc] == empty) {
+                gs.upper_entities[loc] = bomb;
                 gs.holding_bomb = false;
             }
         }
@@ -367,7 +401,11 @@ bool push(int loc, int offset){
     return false;
 }
 
+//We will only interact with items on our level, and the trust state_update to do gravity based interactions
 bool push_wrapped(int loc, int offset, int depth){
+    if (gs.middle_entities[loc] == red_wall || gs.middle_entities[loc] == yellow_wall || gs.middle_entities[loc] == green_wall) {
+        return false;
+    }
     if (depth >= 3) {
         //Not strong enough to push 2 things + the empty space
         return false;
@@ -377,15 +415,7 @@ bool push_wrapped(int loc, int offset, int depth){
         printf("Bad offset of %d\n", offset);
         exit(1);
     }
-    switch(gs.static_entities[loc]) {
-        case wall: 
-            return false; 
-        break;
-        default:
-            //PASS THROUGH TO DYNAMIC CASE
-        break;
-    }
-    switch(gs.dynamic_entities[loc]) {
+    switch(gs.upper_entities[loc]) {
         case boomer: 
         case wood_box: 
         case metal_box: 
@@ -393,12 +423,21 @@ bool push_wrapped(int loc, int offset, int depth){
         case bomb: 
             //PUSHABLE
             if (push_wrapped(loc + offset, offset, depth + 1)) {
-                gs.dynamic_entities[loc + offset] = gs.dynamic_entities[loc];
-                gs.dynamic_entities[loc] = empty;
+                gs.upper_entities[loc + offset] = gs.upper_entities[loc];
+                gs.upper_entities[loc] = empty;
             } else {
                 return false;
             }
         break;
+        case wall: 
+            return false;
+        break;
+    }
+    switch(gs.middle_entities[loc]) {
+        case red_wall:
+        case yellow_wall:
+        case green_wall:
+            return false;
         default:
         break;
     }
@@ -406,14 +445,20 @@ bool push_wrapped(int loc, int offset, int depth){
 }
 
 void launch (int loc, int offset){
-    switch(gs.dynamic_entities[loc]) {
+    switch(gs.upper_entities[loc]) {
         case boomer: 
         case metal_box: 
         case bomb_box: 
         case bomb: 
+            if (gs.middle_entities[loc] == red_wall || gs.middle_entities[loc] == yellow_wall || gs.middle_entities[loc] == green_wall) {
+                return;
+            }
             int steps = 1;
             for (;steps < 5; steps++) {
-                if (gs.dynamic_entities[loc + steps * offset] != empty || gs.static_entities[loc + steps * offset] == wall) {
+                if (gs.upper_entities[loc + steps * offset] != empty || 
+                    gs.middle_entities[loc + steps * offset] == red_wall ||
+                    gs.middle_entities[loc + steps * offset] == yellow_wall ||
+                    gs.middle_entities[loc + steps * offset] == green_wall) {
                     //HIT A THING
                     break;
                 }
@@ -421,12 +466,12 @@ void launch (int loc, int offset){
             steps--;
             if (steps > 0){
                 //pushual swap needs to happen
-                //if (gs.dynamic_entities[loc + steps * offset] == empty) {
-                gs.dynamic_entities[loc + steps * offset] = gs.dynamic_entities[loc];
+                //if (gs.upper_entities[loc + steps * offset] == empty) {
+                gs.upper_entities[loc + steps * offset] = gs.upper_entities[loc];
                 //}
-                gs.dynamic_entities[loc] = empty;
+                gs.upper_entities[loc] = empty;
             }
-            if (gs.dynamic_entities[loc + steps * offset] == bomb_box || gs.dynamic_entities[loc + steps * offset] == bomb) {
+            if (gs.upper_entities[loc + steps * offset] == bomb_box || gs.upper_entities[loc + steps * offset] == bomb) {
                 explode(loc + steps * offset);
             }
         break;
@@ -439,38 +484,70 @@ void launch (int loc, int offset){
 }
 
 void explode (int loc){
-    gs.dynamic_entities[loc] = empty;
+    gs.upper_entities[loc] = empty;
     launch(loc - gs.width, -1 * gs.width);
     launch(loc - 1, -1);
     launch(loc + 1, 1);
     launch(loc + gs.width, gs.width);
-    gravity();
+    state_update();
 }
 
-void gravity(){
+void state_update(){
     for (int loc = 0; loc < gs.width * gs.height; loc++) {
-        switch (gs.static_entities[loc]) {
+        switch (gs.lower_entities[loc]) {
             case pit_bomb_box: 
             case pit: 
-                switch (gs.dynamic_entities[loc]) {
+                switch (gs.upper_entities[loc]) {
                     case boomer:
-                        gs.static_entities[loc] = pit_bloody;
+                        gs.lower_entities[loc] = pit_bloody;
                     break;
                     case bomb:
                     break;
                     case wood_box:
                     break;
                     case metal_box:
-                        gs.static_entities[loc] = pit_metal_box;
+                        gs.lower_entities[loc] = pit_metal_box;
                     break;
                     case bomb_box:
-                        gs.static_entities[loc] = pit_bomb_box;
+                        gs.lower_entities[loc] = pit_bomb_box;
                     break;
                 }
-                gs.dynamic_entities[loc] = empty;
+                gs.upper_entities[loc] = empty;
             break;
             case empty: 
-                gs.dynamic_entities[loc] = empty;
+                //gs.upper_entities[loc] = empty;
+            break;
+        }
+        switch (gs.middle_entities[loc]) {
+            case red_marker: 
+                if (!check_plates(red_plate)){
+                    gs.middle_entities[loc] = red_wall;
+                }
+            break;
+            case red_wall: 
+                if (check_plates(red_plate)){
+                    gs.middle_entities[loc] = red_marker;
+                }
+            break;
+            case yellow_marker: 
+                if (!check_plates(yellow_plate)){
+                    gs.middle_entities[loc] = yellow_wall;
+                }
+            break;
+            case yellow_wall: 
+                if (check_plates(yellow_plate)){
+                    gs.middle_entities[loc] = yellow_marker;
+                }
+            break;
+            case green_marker: 
+                if (!check_plates(green_plate)){
+                    gs.middle_entities[loc] = green_wall;
+                }
+            break;
+            case green_wall: 
+                if (check_plates(green_plate)){
+                    gs.middle_entities[loc] = green_marker;
+                }
             break;
         }
     }
@@ -489,11 +566,16 @@ void win_screen(){
 
 }
 
-bool check_plates(){
+//returns true if all are pressed
+bool check_plates(entity_id plate){
     int loc = 0;
+    if (plate != red_plate && plate != yellow_plate && plate != green_plate){
+        printf("Checking plates on a non plate\n");
+        exit(1);
+    }
     for (; loc < gs.width * gs.height; loc++){
-        if (gs.static_entities[loc] == pressure_plate) {
-            if (gs.dynamic_entities[loc] != boomer && gs.dynamic_entities[loc] != metal_box && gs.dynamic_entities[loc] != wood_box && gs.dynamic_entities[loc] != bomb_box) {
+        if (gs.lower_entities[loc] == plate) {
+            if (gs.upper_entities[loc] != bomb && gs.upper_entities[loc] != boomer && gs.upper_entities[loc] != metal_box && gs.upper_entities[loc] != wood_box && gs.upper_entities[loc] != bomb_box) {
                 return false;
             }
         }
@@ -504,18 +586,13 @@ bool check_plates(){
 bool check_win(){
     int loc = 0;
     for (; loc < gs.width * gs.height; loc++){
-        if (gs.static_entities[loc] == pressure_plate) {
-            if (gs.dynamic_entities[loc] != metal_box && gs.dynamic_entities[loc] != wood_box && gs.dynamic_entities[loc] != bomb_box) {
-                return false;
-            }
-        }
-        if (gs.static_entities[loc] == goal) {
-            if (gs.dynamic_entities[loc] != boomer) {
-                return false;
+        if (gs.lower_entities[loc] == goal) {
+            if (gs.upper_entities[loc] == boomer) {
+                return true;
             }
         }
     }
-    return true;
+    return false;
 }
 
 //HISTORY

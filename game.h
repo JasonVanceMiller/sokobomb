@@ -17,10 +17,18 @@ enum entity_id {
     pit_metal_box, 
     pit_bomb_box, 
     wall, 
-    pressure_plate, 
     wood_box,
     metal_box,
     bomb_box,
+    red_plate, 
+    red_marker, 
+    red_wall, 
+    yellow_plate, 
+    yellow_marker, 
+    yellow_wall, 
+    green_plate, 
+    green_marker, 
+    green_wall, 
     entity_id_count
 };
 typedef enum entity_id entity_id;
@@ -30,8 +38,9 @@ struct game_state {
     bool holding_bomb;
     int width;
     int height;
-    entity_id static_entities[200]; //TODO
-    entity_id dynamic_entities[200]; //TODO
+    entity_id lower_entities[200]; //TODO
+    entity_id middle_entities[200]; //TODO
+    entity_id upper_entities[200]; //TODO
 };
 typedef struct game_state game_state;
 
@@ -42,7 +51,7 @@ struct game_state_history {
 typedef struct game_state_history game_state_history;
 //GLOBALS
 
-extern game_state levels[10];
+extern game_state levels[19];
 extern int level_index;
 extern game_state gs;
 extern game_state_history* gsh;
@@ -58,14 +67,14 @@ game_state level_load(const char*);
 void state_draw();
 Color entity_draw_dispatch(int loc, int x, int y, int cell_size, entity_id e);
 
-bool state_update(action move);
+bool state_move(action move);
 bool push(int loc, int offset);
 bool push_wrapped(int loc, int offset, int depth);
 void launch (int loc, int offset);
 void explode (int loc);
-void gravity();
+void state_update();
 
-bool check_plates();
+bool check_plates(entity_id); //id of plate type
 bool check_win();
 void win_screen();
 

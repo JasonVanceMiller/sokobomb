@@ -13,24 +13,36 @@
 
 bool win_pause = false;
 
-game_state levels[10];
+game_state levels[19];
 int level_index;
 game_state gs;
 game_state_history* gsh;
 
 int main() {
-    levels[0] = level_load(level_first);
-    levels[1] = level_load(level_gap);
-    levels[2] = level_load(level_jump);
-    levels[3] = level_load(level_box);
-    levels[4] = level_load(level_box2);
-    levels[5] = level_load(level_stuck);
-    levels[6] = level_load(level_good);
-    levels[7] = level_load(level_bad);
-    levels[8] = level_load(level_pinch);
-    levels[9] = level_load(level_tennis);
+    level_index = 0;
+    levels[level_index++] = level_load(level_first);
+    levels[level_index++] = level_load(level_gap);
+    levels[level_index++] = level_load(level_jump);
+    levels[level_index++] = level_load(level_plate);
+    levels[level_index++] = level_load(level_plate2);
+    levels[level_index++] = level_load(level_plate3);
+    levels[level_index++] = level_load(level_box);
+    levels[level_index++] = level_load(level_box2);
+    levels[level_index++] = level_load(level_box3);
+    levels[level_index++] = level_load(level_stuck);
+    levels[level_index++] = level_load(level_good);
+    //levels[level_index++] = level_load(level_bad);
+    levels[level_index++] = level_load(level_multi);
+    levels[level_index++] = level_load(level_breeze);
+    levels[level_index++] = level_load(level_halfway);
+    levels[level_index++] = level_load(level_maze);
+    levels[level_index++] = level_load(level_unlock);
+    levels[level_index++] = level_load(level_unlock2);
+    levels[level_index++] = level_load(level_pinch);
+    levels[level_index++] = level_load(level_tennis);
     level_index = 0;
     gs = levels[0];
+    state_update();
     gsh = NULL;
 
 
@@ -47,7 +59,7 @@ int main() {
         //GET INPUT
         input_set(&inputs);
         move = move_get(&inputs);
-        bool err = state_update(move);
+        bool err = state_move(move);
         //DRAW
         BeginDrawing();
 
@@ -66,7 +78,7 @@ int main() {
 
         EndDrawing();
         if (win_pause) {
-            sleep(1);
+            sleep(1); //TODO
             win_pause = false;
             level_index++;
             if (level_index == sizeof(levels) / sizeof(game_state)) {
@@ -75,6 +87,7 @@ int main() {
             }
             gs = levels[level_index];
             game_state_history_clear();
+            state_update();
         }
     }
     CloseWindow();

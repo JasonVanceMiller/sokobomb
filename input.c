@@ -22,8 +22,8 @@ void input_set(input* inputs){
     if (inputs->undo == pressed) {
 		inputs->undo = held;
     }
-    if (inputs->level_skip == pressed) {
-		inputs->level_skip = held;
+    if (inputs->level_next == pressed) {
+		inputs->level_next = held;
     }
     if (inputs->level_previous == pressed) {
 		inputs->level_previous = held;
@@ -51,7 +51,7 @@ void input_set(input* inputs){
 		inputs->undo = released;
     }
     if (!IsKeyDown(KEY_P)) {
-		inputs->level_skip = released;
+		inputs->level_next = released;
     }
     if (!IsKeyDown(KEY_O)) {
 		inputs->level_previous = released;
@@ -79,8 +79,8 @@ void input_set(input* inputs){
     if (inputs->undo != held && IsKeyDown(KEY_Z)) {
 		inputs->undo = pressed;
     }
-    if (inputs->level_skip != held && IsKeyDown(KEY_P)) {
-		inputs->level_skip = pressed;
+    if (inputs->level_next != held && IsKeyDown(KEY_P)) {
+		inputs->level_next = pressed;
     }
     if (inputs->level_previous != held && IsKeyDown(KEY_O)) {
 		inputs->level_previous = pressed;
@@ -111,8 +111,8 @@ action move_get(input* inputs){
     if (inputs->undo == pressed) {
         return undo;
     }
-    if (inputs->level_skip == pressed) {
-        return level_skip;
+    if (inputs->level_next == pressed) {
+        return level_next;
     }
     if (inputs->level_previous == pressed) {
         return level_previous;

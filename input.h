@@ -15,7 +15,7 @@ enum action {
     interact,
     reset,
     undo,
-    level_skip,
+    level_next,
     level_previous,
     action_count
 };
@@ -38,7 +38,7 @@ struct input {
     button interact;
     button reset;
     button undo;
-    button level_skip;
+    button level_next;
     button level_previous;
 };
 typedef struct input input;
