@@ -24,8 +24,8 @@ int main() {
     levels[level_index++] = level_load(level_gap);
     levels[level_index++] = level_load(level_jump);
     levels[level_index++] = level_load(level_plate);
-    levels[level_index++] = level_load(level_plate2);
     levels[level_index++] = level_load(level_plate3);
+    levels[level_index++] = level_load(level_plate2);
     levels[level_index++] = level_load(level_box);
     levels[level_index++] = level_load(level_box2);
     levels[level_index++] = level_load(level_box3);

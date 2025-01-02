@@ -98,11 +98,11 @@ const char* level_stuck =
 
 const char* level_good = 
 ".....WWW.\n"
-"..WWWW_W.\n"
-"..W____W.\n"
-"WWW_%P_WW\n"
+".WWWWW_W.\n"
+".W%r___W.\n"
+"WWW__P_WW\n"
 "WrP_B___W\n"
-"Wrm____WW\n"
+"W_m____WW\n"
 "WWWWW_WW.\n"
 "....WWW..";
 
@@ -127,12 +127,14 @@ const char* level_multi =
 "..............";
 
 const char* level_breeze = 
-"WWWWWWWWW\n"
-"W#WgPPm_W\n"
-"WGWWWWWRW\n"
-"W__m__r_W\n"
-"W__B__WWW\n"
-"WWWWWWW..";
+".WWW...\n"
+".W%W...\n"
+".WPWWWW\n"
+".WPPm_W\n"
+"WW_WWGW\n"
+"W_m_g_W\n"
+"WB_rWWW\n"
+"WWWWW..";
 
 const char* level_halfway = 
 "......WWW\n"
@@ -142,6 +144,7 @@ const char* level_halfway =
 "W___WGWRW\n"
 "W___mBrrW\n"
 "WWWWWWWWW";
+
 const char* level_maze = 
 "WWWWWWW\n"
 "WWRyG#W\n"
@@ -160,16 +163,14 @@ const char* level_unlock =
 ".....WWW";
 
 const char* level_unlock2 = 
-"WWWWWWWW\n"
-"W______W\n"
-"WRWWWW_W\n"
-"Wr_m_PyW\n"
-"WW_B_WYW\n"
-".WWWWWgW\n"
-".....WGW\n"
-".....WYW\n"
-".....W#W\n"
-".....WWW";
+"WWWWWWW\n"
+"W_m__yW\n"
+"W_B_WYW\n"
+"WWWWWgW\n"
+"....WGW\n"
+"....WYW\n"
+"....W#W\n"
+"....WWW";
 
 const char* level_pinch = 
 ".............\n"
@@ -183,12 +184,12 @@ const char* level_pinch =
 ".............";
 
 const char* level_tennis = 
-"...............\n"
-".WWWWW...WWWWW.\n"
-".W___W...W___W.\n"
-"WW_r_WWWWW_m_WW\n"
-"W%_m__PPPr___BW\n"
-"WW_r_WWWWW_b_WW\n"
-".W___W...W___W.\n"
-".WWWWW...WWWWW.\n"
-"...............";
+"................\n"
+"..WWWWW...WWWWW.\n"
+"..W___W...W___W.\n"
+"WWW_r_WWWWW_m_WW\n"
+"W%__m__PPPr___BW\n"
+"WWW_r_WWWWW_b_WW\n"
+"..W___W...W___W.\n"
+"..WWWWW...WWWWW.\n"
+"................";

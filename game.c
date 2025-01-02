@@ -270,7 +270,7 @@ Color entity_draw_dispatch(int loc, int x, int y, int cell_size, entity_id e){
         case red_wall: 
             DrawRectangleLinesEx((Rectangle){x+1, y+1, cell_size-2, cell_size-2}, 10, RED);
             DrawLineEx((Vector2){x + 4, y + 4}, (Vector2){x + cell_size - 8, y + cell_size - 8}, cell_size * 0.05, RED);
-            DrawLineEx((Vector2){x + 4, y + cell_size - 8}, (Vector2){x + cell_size - 8, y + 4}, cell_size * 0.05, RED);
+            DrawLineEx((Vector2){x + 4, (y + cell_size) - 8}, (Vector2){(x + cell_size) - 8, y + 4}, cell_size * 0.05, RED);
         break;
         case yellow_wall: 
             DrawRectangleLinesEx((Rectangle){x+1, y+1, cell_size-2, cell_size-2}, 10, GOLD);
