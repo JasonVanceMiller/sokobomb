@@ -30,18 +30,20 @@ int main() {
     levels[level_index++] = level_load(level_box2);
     levels[level_index++] = level_load(level_box3);
     levels[level_index++] = level_load(level_stuck);
+    levels[level_index++] = level_load(level_zigzag);
     levels[level_index++] = level_load(level_good);
     //levels[level_index++] = level_load(level_bad);
     levels[level_index++] = level_load(level_multi);
-    levels[level_index++] = level_load(level_breeze);
-    levels[level_index++] = level_load(level_halfway);
     levels[level_index++] = level_load(level_maze);
-    levels[level_index++] = level_load(level_unlock);
     levels[level_index++] = level_load(level_unlock2);
-    levels[level_index++] = level_load(level_pinch);
-    levels[level_index++] = level_load(level_tennis);
-    level_index = 0;
-    gs = levels[0];
+    levels[level_index++] = level_load(level_breeze);
+    levels[level_index++] = level_load(level_block_free);
+    levels[level_index++] = level_load(level_halfway);
+    levels[level_index++] = level_load(level_unlock);
+    //levels[level_index++] = level_load(level_pinch);
+    //levels[level_index++] = level_load(level_tennis);
+    level_index = 10;
+    gs = levels[level_index];
     state_update();
     gsh = NULL;
 

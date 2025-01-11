@@ -58,7 +58,7 @@ extern game_state_history* gsh;
 
 static int SCREEN_WIDTH  = 1600;
 static int SCREEN_HEIGHT = 1000;
-static int VERTICAL_PADDING  = 50;
+static int PADDING  = 100;
 
 
 //PROTOTYPES

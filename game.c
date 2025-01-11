@@ -113,7 +113,7 @@ game_state level_load(const char* level){
             default: 
                 loc--;
                 if (i >= len) {
-                    printf("Error loading level\n");
+                    printf("Error loading level, oob\n");
                     exit(1);
                 }
             break;
@@ -126,11 +126,21 @@ game_state level_load(const char* level){
 //DRAWING 
 
 void state_draw(){
-    int vertical_space = SCREEN_HEIGHT - 2 * VERTICAL_PADDING;
+    int vertical_space = SCREEN_HEIGHT - 2 * PADDING;
+    int horrizontal_space = SCREEN_WIDTH - 2 * PADDING;
     int cell_size = vertical_space / gs.height;
-
-    int starting_x = (SCREEN_WIDTH - gs.width * cell_size) / 2;
-    int starting_y = VERTICAL_PADDING;
+    int starting_x;
+    int starting_y;
+    if (cell_size <= horrizontal_space / gs.width) {
+        //Tall
+        starting_x = (SCREEN_WIDTH - gs.width * cell_size) / 2;
+        starting_y = PADDING;
+    } else {
+        //Wide
+        cell_size = horrizontal_space / gs.width;
+        starting_y = (SCREEN_HEIGHT - gs.height * cell_size) / 2;
+        starting_x = PADDING;
+    }
 
     for (int x = 0; x < gs.width; x++){
         for (int y = 0; y < gs.height; y++){
@@ -237,8 +247,8 @@ Color entity_draw_dispatch(int loc, int x, int y, int cell_size, entity_id e){
         break;
         case pit_metal_box: 
             draw_pit_bottom(x, y, cell_size);
-            DrawRectangle(x+10, y+10, cell_size-20, cell_size-20, GRAY); 
-            DrawRectangle(x+20, y+20, cell_size-40, cell_size-40, DARKGRAY); 
+            DrawRectangle(x+10, y+10, cell_size-20, cell_size-20, (Color){ 100, 100, 100, 255 }); 
+            DrawRectangle(x+20, y+20, cell_size-40, cell_size-40, (Color){ 50, 50, 50, 255 }); 
         break;
         case pit_bomb_box: 
             draw_pit_bottom(x, y, cell_size);
