@@ -24,11 +24,11 @@ int main() {
     levels[level_index++] = level_load(level_gap);
     levels[level_index++] = level_load(level_jump);
     levels[level_index++] = level_load(level_plate);
-    levels[level_index++] = level_load(level_plate3);
-    levels[level_index++] = level_load(level_plate2);
     levels[level_index++] = level_load(level_box);
     levels[level_index++] = level_load(level_box2);
     levels[level_index++] = level_load(level_box3);
+    levels[level_index++] = level_load(level_plate3);
+    levels[level_index++] = level_load(level_plate2);
     levels[level_index++] = level_load(level_stuck);
     levels[level_index++] = level_load(level_zigzag);
     levels[level_index++] = level_load(level_good);
@@ -42,7 +42,7 @@ int main() {
     levels[level_index++] = level_load(level_unlock);
     //levels[level_index++] = level_load(level_pinch);
     //levels[level_index++] = level_load(level_tennis);
-    level_index = 10;
+    level_index = 0;
     gs = levels[level_index];
     state_update();
     gsh = NULL;

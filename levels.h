@@ -107,9 +107,9 @@ const char* level_stuck =
 "..WWW..";
 
 const char* level_good = 
-".....WWW.\n"
-".WWWWW_W.\n"
-".W%r___W.\n"
+".WWW.WWW.\n"
+".W%WWW_W.\n"
+".W_r___W.\n"
 "WWW__P_WW\n"
 "WrP_B___W\n"
 "W_m____WW\n"
