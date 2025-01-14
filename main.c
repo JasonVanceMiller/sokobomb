@@ -13,7 +13,7 @@
 
 bool win_pause = false;
 
-game_state levels[19];
+game_state levels[20];
 int level_index;
 game_state gs;
 game_state_history* gsh;
@@ -40,9 +40,10 @@ int main() {
     levels[level_index++] = level_load(level_block_free);
     levels[level_index++] = level_load(level_halfway);
     levels[level_index++] = level_load(level_unlock);
+    levels[level_index++] = level_load(level_joseph);
     //levels[level_index++] = level_load(level_pinch);
     //levels[level_index++] = level_load(level_tennis);
-    level_index = 0;
+    level_index = 19;
     gs = levels[level_index];
     state_update();
     gsh = NULL;

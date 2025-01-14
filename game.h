@@ -51,7 +51,7 @@ struct game_state_history {
 typedef struct game_state_history game_state_history;
 //GLOBALS
 
-extern game_state levels[19];
+extern game_state levels[20];
 extern int level_index;
 extern game_state gs;
 extern game_state_history* gsh;

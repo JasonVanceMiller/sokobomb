@@ -153,16 +153,16 @@ const char* level_breeze =
 "WWWWW..";
 
 const char* level_halfway = 
-".....WWWWWWW\n"
+".......WWWWW\n"
 ".....WWW_gGW\n"
 ".....W%W___W\n"
-"WWWWWWPP_mWW\n"
-"WWWW____WRWW\n"
+"...WWWPP_mWW\n"
+"...W____WRWW\n"
 "WWWW___BrrWW\n"
-"WP__P_mPWWWW\n"
-"WW___yYWWWWW\n"
-"WWW__WWWWWWW\n"
-"WWWWWWWWWWWW";
+"WP__P_mPWWW.\n"
+"WW___yYWW...\n"
+".WW__WWW....\n"
+"..WWWW......";
 
 const char* level_unlock = 
 ".......WWW\n"
@@ -210,3 +210,13 @@ const char* level_block_free =
 "W_GgWWWW\n"
 "WW%WW...\n"
 ".WWW....";
+
+const char* level_joseph = 
+"WWWWWWW.\n"
+"WW__PPW.\n"
+"W___P_W.\n"
+"WWmmP_W.\n"
+".WB_P_WW\n"
+".W_WPP#W\n"
+".WWWWWWW\n"
+"........";
