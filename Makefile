@@ -13,7 +13,7 @@ run: boomer_boy
 	LD_LIBRARY_PATH=$LD_LIBRARY_PATH:../raylib/lib/ ./boomer_boy      
 
 clean:  
-	rm boomer_boy; rm boomer_boy.exe; rm boomer_boy.zip
+	rm boomer_boy; rm boomer_boy.exe; rm boomer_boy.zip; rm build/boomer_boy.html
 
 ship: boomer_boy boomer_boy.exe
 	zip boomer_boy.zip boomer_boy.exe --encrypt

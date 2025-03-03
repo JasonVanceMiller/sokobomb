@@ -71,22 +71,22 @@ game_state level_load(const char* level){
             case 'P':
                 out_gs.lower_entities[loc] = pit;
                 out_gs.middle_entities[loc] = empty;
-                out_gs.upper_entities[loc] = none;
+                out_gs.upper_entities[loc] = empty;
             break;
             case '#':
                 out_gs.lower_entities[loc] = goal;
                 out_gs.middle_entities[loc] = empty;
-                out_gs.upper_entities[loc] = none;
+                out_gs.upper_entities[loc] = empty;
             break;
             case '%':
                 out_gs.lower_entities[loc] = goal;
                 out_gs.middle_entities[loc] = red_marker;
-                out_gs.upper_entities[loc] = none;
+                out_gs.upper_entities[loc] = empty;
             break;
             case 'r':
                 out_gs.lower_entities[loc] = red_plate;
                 out_gs.middle_entities[loc] = empty;
-                out_gs.upper_entities[loc] = none;
+                out_gs.upper_entities[loc] = empty;
             break;
             case 'R':
                 out_gs.lower_entities[loc] = ground;
@@ -95,7 +95,7 @@ game_state level_load(const char* level){
             case 'y':
                 out_gs.lower_entities[loc] = yellow_plate;
                 out_gs.middle_entities[loc] = empty;
-                out_gs.upper_entities[loc] = none;
+                out_gs.upper_entities[loc] = empty;
             break;
             case 'Y':
                 out_gs.lower_entities[loc] = ground;
@@ -104,7 +104,7 @@ game_state level_load(const char* level){
             case 'g':
                 out_gs.lower_entities[loc] = green_plate;
                 out_gs.middle_entities[loc] = empty;
-                out_gs.upper_entities[loc] = none;
+                out_gs.upper_entities[loc] = empty;
             break;
             case 'G':
                 out_gs.lower_entities[loc] = ground;
