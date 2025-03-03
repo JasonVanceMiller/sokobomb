@@ -1,5 +1,31 @@
 #include "input.h"
+//NOCHECKIN. This  never resets to none. This can be done a lot simpler
 
+////FUNCTIONS
+//void button_update(button* b, bool press) {
+//    if (*b == released) {
+//        *b = none;
+//    }
+//    if (*b == pressed) {
+//        *b = held;
+//    }
+//    if (*b == none && press) {
+//        *b = pressed;
+//    }
+//    if (*b == held && !press) {
+//        *b = released;
+//    }
+//}
+//
+//void player_input_update(player_input* input){
+//    input->mouse_position = GetMousePosition();
+//    button_update(&(input->mouse_button_state), IsMouseButtonDown(MOUSE_BUTTON_LEFT));
+//    button_update(&(input->up), IsKeyDown(KEY_W));
+//    button_update(&(input->down), IsKeyDown(KEY_S));
+//    button_update(&(input->left), IsKeyDown(KEY_A));
+//    button_update(&(input->right), IsKeyDown(KEY_D));
+//
+//}
 void input_set(input* inputs){
     if (inputs->up == pressed) {
         inputs->up = held;

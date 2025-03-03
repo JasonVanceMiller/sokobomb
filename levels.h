@@ -220,3 +220,16 @@ const char* level_joseph =
 ".W_WPP#W\n"
 ".WWWWWWW\n"
 "........";
+
+//****************************************
+// Level where you need to push a bomb onto a pressure plate within a green wall. Maybe. Or we change bomb rules. 
+//****************************************
+//const char* level_quirky = 
+//"WWWWWWW\n"
+//"W__B__W\n"
+//"W_g_G_W\n"
+//"W_____W\n"
+//".WB_P_W\n"
+//".W_WPP#\n"
+//".WWWWWW\n"
+//".......";
