@@ -1,5 +1,5 @@
 #include "input.h"
-//NOCHECKIN. This  never resets to none. This can be done a lot simpler
+//TODO. This  never resets to none. This can be done a lot simpler
 
 ////FUNCTIONS
 //void button_update(button* b, bool press) {

@@ -19,6 +19,8 @@ game_state gs;
 game_state_history* gsh;
 
 int main() {
+    bool err = false;
+    int win_timer = 0;
     level_index = 0;
     levels[level_index++] = level_load(level_first);
     levels[level_index++] = level_load(level_gap);
@@ -60,9 +62,11 @@ int main() {
     char str[20];
     while (!WindowShouldClose()) {
         //GET INPUT
-        input_set(&inputs);
-        move = move_get(&inputs);
-        bool err = state_move(move);
+        if (!win_pause) {
+            input_set(&inputs);
+            move = move_get(&inputs);
+            err = state_move(move);
+        }
         //DRAW
         BeginDrawing();
 
@@ -81,16 +85,19 @@ int main() {
 
         EndDrawing();
         if (win_pause) {
-            sleep(1); //TODO
-            win_pause = false;
-            level_index++;
-            if (level_index == sizeof(levels) / sizeof(game_state)) {
-                win_screen();
-                break;
+            win_timer++;
+            if (win_timer > 60) {
+                win_timer = 0;
+                win_pause = false;
+                level_index++;
+                if (level_index == sizeof(levels) / sizeof(game_state)) {
+                    win_screen();
+                    break;
+                }
+                gs = levels[level_index];
+                game_state_history_clear();
+                state_update();
             }
-            gs = levels[level_index];
-            game_state_history_clear();
-            state_update();
         }
     }
     CloseWindow();
