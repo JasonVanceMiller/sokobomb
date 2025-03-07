@@ -13,7 +13,7 @@
 
 bool win_pause = false;
 
-game_state levels[19];
+game_state levels[20];
 int level_index;
 game_state gs;
 game_state_history* gsh;
@@ -38,6 +38,7 @@ int main() {
     levels[level_index++] = level_load(level_multi);
     levels[level_index++] = level_load(level_maze);
     levels[level_index++] = level_load(level_unlock2);
+    levels[level_index++] = level_load(level_quirky);
     levels[level_index++] = level_load(level_breeze);
     levels[level_index++] = level_load(level_block_free);
     levels[level_index++] = level_load(level_halfway);

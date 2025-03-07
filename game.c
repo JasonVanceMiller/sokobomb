@@ -110,6 +110,11 @@ game_state level_load(const char* level){
                 out_gs.lower_entities[loc] = ground;
                 out_gs.middle_entities[loc] = green_marker;
             break;
+            case 'x':
+                out_gs.lower_entities[loc] = red_plate;
+                out_gs.middle_entities[loc] = green_marker;
+                out_gs.upper_entities[loc] = empty;
+            break;
             default: 
                 loc--;
                 if (i >= len) {
