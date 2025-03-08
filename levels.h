@@ -157,10 +157,10 @@ const char* level_halfway =
 ".....WWW_gGW\n"
 ".....W%W___W\n"
 "...WWWPP_mWW\n"
-"...W___WWRWW\n"
+"...W____WRWW\n"
 "WWWW___BrrWW\n"
-"WP__P_mPWWW.\n"
-"WW___yYWW...\n"
+"WP__P_mP_WW.\n"
+"WW___yYWWW..\n"
 ".WW__WWW....\n"
 "..WWWW......";
 
