@@ -52,6 +52,7 @@ int main() {
     gsh = NULL;
 
 
+    SetConfigFlags(FLAG_MSAA_4X_HINT);
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Boomer Boy!");
     SetTargetFPS(60);
 
