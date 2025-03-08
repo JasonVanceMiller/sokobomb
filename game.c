@@ -4,6 +4,8 @@
 #include <stdlib.h> 
 #include <string.h> 
 
+int SCREEN_WIDTH = 1600;
+int SCREEN_HEIGHT = 1600;
 
 //LEVEL LOADING
 game_state level_load(const char* level){

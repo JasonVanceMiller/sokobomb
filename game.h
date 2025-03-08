@@ -56,8 +56,11 @@ extern int level_index;
 extern game_state gs;
 extern game_state_history* gsh;
 
-static int SCREEN_WIDTH  = 1600; //16:9
-static int SCREEN_HEIGHT = 900; 
+extern int SCREEN_WIDTH;
+extern int SCREEN_HEIGHT;
+
+//static int SCREEN_WIDTH  = 1600; //16:9
+//static int SCREEN_HEIGHT = 900; 
 static int PADDING  = 100;
 
 

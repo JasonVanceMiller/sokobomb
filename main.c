@@ -18,6 +18,7 @@ int level_index;
 game_state gs;
 game_state_history* gsh;
 
+
 int main() {
     bool err = false;
     int win_timer = 0;
@@ -53,6 +54,7 @@ int main() {
 
 
     SetConfigFlags(FLAG_MSAA_4X_HINT);
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Boomer Boy!");
     SetTargetFPS(60);
 
@@ -63,6 +65,8 @@ int main() {
     
     char str[20];
     while (!WindowShouldClose()) {
+        SCREEN_WIDTH = GetScreenWidth();
+        SCREEN_HEIGHT = GetScreenHeight();
         //GET INPUT
         if (!win_pause) {
             input_set(&inputs);
