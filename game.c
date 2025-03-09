@@ -7,6 +7,8 @@
 int SCREEN_WIDTH = 1600;
 int SCREEN_HEIGHT = 1600;
 
+bool SPRITE_SHEET_INIT = false;
+Texture2D SPRITE_SHEET;
 //LEVEL LOADING
 game_state level_load(const char* level){
     int len = strlen(level);
@@ -158,161 +160,97 @@ void state_draw(){
         }
     }
 }
-void draw_bomb(int x, int y, int cell_size){
-    DrawLineEx((Vector2){x + cell_size / 2, y + cell_size / 2}, (Vector2){x + cell_size * 0.8, y + cell_size * 0.2}, cell_size * 0.1, BROWN);
-    DrawLineEx((Vector2){x + cell_size / 2, y + cell_size / 2}, (Vector2){x + cell_size * 0.7, y + cell_size * 0.3}, cell_size * 0.3, BLACK);
-    DrawCircle(x + cell_size / 2, y + cell_size / 2, cell_size * 0.25, BLACK);
-}
-void draw_pit_bottom(int x, int y, int cell_size){
-    DrawRectangle(x, y, cell_size, cell_size, WHITE); 
-    DrawRectangle(x+1, y+1, cell_size-2, cell_size-2, BLACK); 
-}
-void draw_pit_spikes(int x, int y, int cell_size){
-    DrawTriangle(
-        (Vector2){x + cell_size * 0.55, y + cell_size * 0.5},
-        (Vector2){x + cell_size * 0.65, y + cell_size * 0.5},
-        (Vector2){x + cell_size * 0.6, y + cell_size * 0.2},
-        LIGHTGRAY
-    );            
-    DrawTriangle(
-        (Vector2){x + cell_size * 0.25, y + cell_size * 0.4},
-        (Vector2){x + cell_size * 0.35, y + cell_size * 0.4},
-        (Vector2){x + cell_size * 0.3, y + cell_size * 0.1},
-        LIGHTGRAY
-    );            
-    DrawTriangle(
-        (Vector2){x + cell_size * 0.45, y + cell_size * 0.8},
-        (Vector2){x + cell_size * 0.55, y + cell_size * 0.8},
-        (Vector2){x + cell_size * 0.5, y + cell_size * 0.5},
-        LIGHTGRAY
-    );            
-}
-void draw_pit_blood(int x, int y, int cell_size){
-    DrawTriangle(
-        (Vector2){x + cell_size * 0.575, y + cell_size * 0.35},
-        (Vector2){x + cell_size * 0.625, y + cell_size * 0.35},
-        (Vector2){x + cell_size * 0.6, y + cell_size * 0.2},
-        RED
-    );            
-    DrawTriangle(
-        (Vector2){x + cell_size * 0.275, y + cell_size * 0.25},
-        (Vector2){x + cell_size * 0.325, y + cell_size * 0.25},
-        (Vector2){x + cell_size * 0.3, y + cell_size * 0.1},
-        RED
-    );            
-    DrawTriangle(
-        (Vector2){x + cell_size * 0.475, y + cell_size * 0.65},
-        (Vector2){x + cell_size * 0.525, y + cell_size * 0.65},
-        (Vector2){x + cell_size * 0.5, y + cell_size * 0.5},
-        RED
-    );            
-}
-void draw_marker(int x, int y, int cell_size){
-    DrawRectangle(x, y, cell_size, cell_size, WHITE); 
-    DrawRectangle(x+1, y+1, cell_size-2, cell_size-2, BEIGE); 
-}
-void draw_plate(int loc, int x, int y, int cell_size, Color color){
-    draw_marker(x, y, cell_size);
-    if(gs.upper_entities[loc] == boomer || gs.upper_entities[loc] == metal_box || gs.upper_entities[loc] == metal_box || gs.upper_entities[loc] == wood_box || gs.upper_entities[loc] == bomb_box){
-        DrawRectangle(x+1, y+1, cell_size-2, cell_size-2, PURPLE); 
-    }
-    DrawRectangle(x+5, y+5, cell_size-10, cell_size-10, color); 
-}
 Color entity_draw_dispatch(int loc, int x, int y, int cell_size, entity_id e){
+    if (!SPRITE_SHEET_INIT) {
+        SPRITE_SHEET = LoadTexture("sprite_sheet.png");
+        SPRITE_SHEET_INIT = true;
+    }
     switch(e){
         case ground: 
+            DrawTexturePro(SPRITE_SHEET, (Rectangle){16,0,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
             draw_marker(x, y, cell_size);
             //ALREADY DRAWN
         break;
         case boomer: 
-            DrawCircle(x + cell_size / 2, y + cell_size / 2, cell_size * 0.45 , DARKPURPLE);
+            DrawTexturePro(SPRITE_SHEET, (Rectangle){32,0,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+            draw_marker(x, y, cell_size);
+            //ALREADY DRAWN
             if (gs.holding_bomb) {
                 draw_bomb(x, y, cell_size);
             }
         break;
         case bomb: 
             draw_bomb(x, y, cell_size);
-            //DrawRectangle(x + cell_size / 4, y + cell_size / 4, cell_size / 2, cell_size / 2, BLACK);
         break;
         case goal: 
-            draw_marker(x, y, cell_size);
-            DrawCircle(x + cell_size / 2, y + cell_size / 2, cell_size * 0.48 , DARKPURPLE);
-            DrawCircle(x + cell_size / 2, y + cell_size / 2, cell_size * 0.40 , BEIGE);
+            //draw ground first
+            DrawTexturePro(SPRITE_SHEET, (Rectangle){16,0,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+            DrawTexturePro(SPRITE_SHEET, (Rectangle){64,0,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
 
         break;
         case pit: 
-            draw_pit_bottom(x, y, cell_size);
-            draw_pit_spikes(x, y, cell_size);
+            DrawTexturePro(SPRITE_SHEET, (Rectangle){80,0,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
         break;
         case pit_bloody: 
-            draw_pit_bottom(x, y, cell_size);
-            DrawCircle(x + cell_size / 2, y + cell_size / 2, cell_size * 0.45 , DARKPURPLE);
-            draw_pit_spikes(x, y, cell_size);
-            draw_pit_blood(x, y, cell_size);
+            DrawTexturePro(SPRITE_SHEET, (Rectangle){0,16,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
         break;
         case pit_wood_box: 
         break;
         case pit_metal_box: 
-            draw_pit_bottom(x, y, cell_size);
-            DrawRectangle(x+10, y+10, cell_size-20, cell_size-20, (Color){ 100, 100, 100, 255 }); 
-            DrawRectangle(x+20, y+20, cell_size-40, cell_size-40, (Color){ 50, 50, 50, 255 }); 
+            DrawTexturePro(SPRITE_SHEET, (Rectangle){32,16,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
         break;
         case pit_bomb_box: 
-            draw_pit_bottom(x, y, cell_size);
-            DrawRectangle(x+10, y+10, cell_size-20, cell_size-20, MAROON); 
-            draw_bomb(x, y, cell_size);
-            draw_pit_spikes(x, y, cell_size);
         break;
         case wall: 
-            DrawRectangle(x, y, cell_size, cell_size, GRAY); 
+            DrawTexturePro(SPRITE_SHEET, (Rectangle){64,16,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
         break;
         case red_plate: 
-            draw_plate(loc, x, y, cell_size, RED);
-        break;
-        case yellow_plate: 
-            draw_plate(loc, x, y, cell_size, GOLD);
-        break;
-        case green_plate: 
-            draw_plate(loc, x, y, cell_size, DARKGREEN);
-        break;
-        case red_marker: 
-            DrawRectangleLinesEx((Rectangle){x+1, y+1, cell_size-2, cell_size-2}, 10, RED);
-        break;
-        case yellow_marker: 
-            DrawRectangleLinesEx((Rectangle){x+1, y+1, cell_size-2, cell_size-2}, 10, GOLD);
-        break;
-        case green_marker: 
-            DrawRectangleLinesEx((Rectangle){x+1, y+1, cell_size-2, cell_size-2}, 10, DARKGREEN);
+            DrawTexturePro(SPRITE_SHEET, (Rectangle){16,0,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+            DrawTexturePro(SPRITE_SHEET, (Rectangle){32,32,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+            if(gs.upper_entities[loc] == boomer || gs.upper_entities[loc] == bomb || gs.upper_entities[loc] == metal_box || gs.upper_entities[loc] == wood_box || gs.upper_entities[loc] == bomb_box){
+                DrawTexturePro(SPRITE_SHEET, (Rectangle){0,0,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+            }
         break;
         case red_wall: 
-            DrawRectangleLinesEx((Rectangle){x+1, y+1, cell_size-2, cell_size-2}, 10, RED);
-            DrawLineEx((Vector2){x + 4, y + 4}, (Vector2){x + cell_size - 8, y + cell_size - 8}, cell_size * 0.05, RED);
-            DrawLineEx((Vector2){x + 4, (y + cell_size) - 8}, (Vector2){(x + cell_size) - 8, y + 4}, cell_size * 0.05, RED);
+            DrawTexturePro(SPRITE_SHEET, (Rectangle){64,32,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+        break;
+        case red_marker: 
+            DrawTexturePro(SPRITE_SHEET, (Rectangle){48,32,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+        break;
+        case yellow_plate: 
+            DrawTexturePro(SPRITE_SHEET, (Rectangle){16,0,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+            DrawTexturePro(SPRITE_SHEET, (Rectangle){80,32,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+            if(gs.upper_entities[loc] == boomer || gs.upper_entities[loc] == bomb || gs.upper_entities[loc] == metal_box || gs.upper_entities[loc] == wood_box || gs.upper_entities[loc] == bomb_box){
+                DrawTexturePro(SPRITE_SHEET, (Rectangle){0,0,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+            }
         break;
         case yellow_wall: 
-            DrawRectangleLinesEx((Rectangle){x+1, y+1, cell_size-2, cell_size-2}, 10, GOLD);
-            DrawLineEx((Vector2){x + 4, y + 4}, (Vector2){x + cell_size - 8, y + cell_size - 8}, cell_size * 0.05, GOLD);
-            DrawLineEx((Vector2){x + 4, y + cell_size - 8}, (Vector2){x + cell_size - 8, y + 4}, cell_size * 0.05, GOLD);
+            DrawTexturePro(SPRITE_SHEET, (Rectangle){16,48,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+        break;
+        case yellow_marker: 
+            DrawTexturePro(SPRITE_SHEET, (Rectangle){80,48,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+        break;
+        case green_plate: 
+            DrawTexturePro(SPRITE_SHEET, (Rectangle){16,0,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+            DrawTexturePro(SPRITE_SHEET, (Rectangle){32,48,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+            if(gs.upper_entities[loc] == boomer || gs.upper_entities[loc] == bomb || gs.upper_entities[loc] == metal_box || gs.upper_entities[loc] == wood_box || gs.upper_entities[loc] == bomb_box){
+                DrawTexturePro(SPRITE_SHEET, (Rectangle){0,0,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+            }
         break;
         case green_wall: 
-            DrawRectangleLinesEx((Rectangle){x+1, y+1, cell_size-2, cell_size-2}, 10, DARKGREEN);
-            DrawLineEx((Vector2){x + 4, y + 4}, (Vector2){x + cell_size - 8, y + cell_size - 8}, cell_size * 0.05, DARKGREEN);
-            DrawLineEx((Vector2){x + 4, y + cell_size - 8}, (Vector2){x + cell_size - 8, y + 4}, cell_size * 0.05, DARKGREEN);
+            DrawTexturePro(SPRITE_SHEET, (Rectangle){64,48,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+        break;
+        case green_marker: 
+            DrawTexturePro(SPRITE_SHEET, (Rectangle){48,48,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
         break;
         case wood_box: 
-            DrawRectangle(x+10, y+10, cell_size-20, cell_size-20, BROWN); 
         break;
         case metal_box: 
-            DrawRectangle(x+10, y+10, cell_size-20, cell_size-20, GRAY); 
-            DrawRectangle(x+20, y+20, cell_size-40, cell_size-40, DARKGRAY); 
+            DrawTexturePro(SPRITE_SHEET, (Rectangle){0,32,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
         break;
         case bomb_box: 
-            DrawRectangle(x+10, y+10, cell_size-20, cell_size-20, MAROON); 
-            draw_bomb(x, y, cell_size);
         break;
         default: 
-            //NOT GOOD BECAUSE MOST OF upper LAYER IS EMPTY
-            //DrawRectangle(x, y, cell_size, cell_size, PINK); 
         break;
 
     }
