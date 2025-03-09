@@ -55,7 +55,7 @@ game_state level_load(const char* level){
             case 'B':
                 out_gs.lower_entities[loc] = ground;
                 out_gs.middle_entities[loc] = empty;
-                out_gs.upper_entities[loc] = boomer;
+                out_gs.upper_entities[loc] = frog;
             break;
             case 'w':
                 out_gs.lower_entities[loc] = ground;
@@ -97,13 +97,13 @@ game_state level_load(const char* level){
                 out_gs.middle_entities[loc] = red_marker;
             break;
             case 'y':
-                out_gs.lower_entities[loc] = yellow_plate;
+                out_gs.lower_entities[loc] = blue_plate;
                 out_gs.middle_entities[loc] = empty;
                 out_gs.upper_entities[loc] = empty;
             break;
             case 'Y':
                 out_gs.lower_entities[loc] = ground;
-                out_gs.middle_entities[loc] = yellow_marker;
+                out_gs.middle_entities[loc] = blue_marker;
             break;
             case 'g':
                 out_gs.lower_entities[loc] = green_plate;
@@ -170,7 +170,7 @@ Color entity_draw_dispatch(int loc, int x, int y, int cell_size, entity_id e){
             DrawTexturePro(SPRITE_SHEET, (Rectangle){16,0,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
             //ALREADY DRAWN
         break;
-        case boomer: 
+        case frog: 
             DrawTexturePro(SPRITE_SHEET, (Rectangle){32,0,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
             //ALREADY DRAWN
             if (gs.holding_bomb) {
@@ -205,7 +205,7 @@ Color entity_draw_dispatch(int loc, int x, int y, int cell_size, entity_id e){
         case red_plate: 
             DrawTexturePro(SPRITE_SHEET, (Rectangle){16,0,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
             DrawTexturePro(SPRITE_SHEET, (Rectangle){32,32,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
-            if(gs.upper_entities[loc] == boomer || gs.upper_entities[loc] == bomb || gs.upper_entities[loc] == metal_box || gs.upper_entities[loc] == wood_box || gs.upper_entities[loc] == bomb_box){
+            if(gs.upper_entities[loc] == frog || gs.upper_entities[loc] == bomb || gs.upper_entities[loc] == metal_box || gs.upper_entities[loc] == wood_box || gs.upper_entities[loc] == bomb_box){
                 DrawTexturePro(SPRITE_SHEET, (Rectangle){0,0,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
             }
         break;
@@ -215,23 +215,23 @@ Color entity_draw_dispatch(int loc, int x, int y, int cell_size, entity_id e){
         case red_marker: 
             DrawTexturePro(SPRITE_SHEET, (Rectangle){48,32,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
         break;
-        case yellow_plate: 
+        case blue_plate: 
             DrawTexturePro(SPRITE_SHEET, (Rectangle){16,0,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
             DrawTexturePro(SPRITE_SHEET, (Rectangle){80,32,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
-            if(gs.upper_entities[loc] == boomer || gs.upper_entities[loc] == bomb || gs.upper_entities[loc] == metal_box || gs.upper_entities[loc] == wood_box || gs.upper_entities[loc] == bomb_box){
+            if(gs.upper_entities[loc] == frog || gs.upper_entities[loc] == bomb || gs.upper_entities[loc] == metal_box || gs.upper_entities[loc] == wood_box || gs.upper_entities[loc] == bomb_box){
                 DrawTexturePro(SPRITE_SHEET, (Rectangle){0,0,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
             }
         break;
-        case yellow_wall: 
+        case blue_wall: 
             DrawTexturePro(SPRITE_SHEET, (Rectangle){16,48,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
         break;
-        case yellow_marker: 
-            DrawTexturePro(SPRITE_SHEET, (Rectangle){80,48,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+        case blue_marker: 
+            DrawTexturePro(SPRITE_SHEET, (Rectangle){0,48,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
         break;
         case green_plate: 
             DrawTexturePro(SPRITE_SHEET, (Rectangle){16,0,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
             DrawTexturePro(SPRITE_SHEET, (Rectangle){32,48,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
-            if(gs.upper_entities[loc] == boomer || gs.upper_entities[loc] == bomb || gs.upper_entities[loc] == metal_box || gs.upper_entities[loc] == wood_box || gs.upper_entities[loc] == bomb_box){
+            if(gs.upper_entities[loc] == frog || gs.upper_entities[loc] == bomb || gs.upper_entities[loc] == metal_box || gs.upper_entities[loc] == wood_box || gs.upper_entities[loc] == bomb_box){
                 DrawTexturePro(SPRITE_SHEET, (Rectangle){0,0,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
             }
         break;
@@ -291,7 +291,7 @@ bool state_move(action move){
 
     int loc = 0;
     for (; loc < gs.width * gs.height; loc++){
-        if (gs.upper_entities[loc] == boomer) {
+        if (gs.upper_entities[loc] == frog) {
             goto found;
         }
     }
@@ -356,7 +356,7 @@ bool push(int loc, int offset){
 
 //We will only interact with items on our level, and the trust state_update to do gravity based interactions
 bool push_wrapped(int loc, int offset, int depth){
-    if (gs.middle_entities[loc] == red_wall || gs.middle_entities[loc] == yellow_wall || gs.middle_entities[loc] == green_wall) {
+    if (gs.middle_entities[loc] == red_wall || gs.middle_entities[loc] == blue_wall || gs.middle_entities[loc] == green_wall) {
         return false;
     }
     if (depth >= 3) {
@@ -369,7 +369,7 @@ bool push_wrapped(int loc, int offset, int depth){
         exit(1);
     }
     switch(gs.upper_entities[loc]) {
-        case boomer: 
+        case frog: 
         case wood_box: 
         case metal_box: 
         case bomb_box: 
@@ -388,7 +388,7 @@ bool push_wrapped(int loc, int offset, int depth){
     }
     switch(gs.middle_entities[loc]) {
         case red_wall:
-        case yellow_wall:
+        case blue_wall:
         case green_wall:
             return false;
         default:
@@ -399,18 +399,18 @@ bool push_wrapped(int loc, int offset, int depth){
 
 void launch (int loc, int offset){
     switch(gs.upper_entities[loc]) {
-        case boomer: 
+        case frog: 
         case metal_box: 
         case bomb_box: 
         case bomb: 
-            if (gs.middle_entities[loc] == red_wall || gs.middle_entities[loc] == yellow_wall || gs.middle_entities[loc] == green_wall) {
+            if (gs.middle_entities[loc] == red_wall || gs.middle_entities[loc] == blue_wall || gs.middle_entities[loc] == green_wall) {
                 return;
             }
             int steps = 1;
             for (;steps < 5; steps++) {
                 if (gs.upper_entities[loc + steps * offset] != empty || 
                     gs.middle_entities[loc + steps * offset] == red_wall ||
-                    gs.middle_entities[loc + steps * offset] == yellow_wall ||
+                    gs.middle_entities[loc + steps * offset] == blue_wall ||
                     gs.middle_entities[loc + steps * offset] == green_wall) {
                     //HIT A THING
                     break;
@@ -451,7 +451,7 @@ void state_update(){
             case pit_bomb_box: 
             case pit: 
                 switch (gs.upper_entities[loc]) {
-                    case boomer:
+                    case frog:
                         gs.lower_entities[loc] = pit_bloody;
                     break;
                     case bomb:
@@ -482,14 +482,14 @@ void state_update(){
                     gs.middle_entities[loc] = red_marker;
                 }
             break;
-            case yellow_marker: 
-                if (!check_plates(yellow_plate)){
-                    gs.middle_entities[loc] = yellow_wall;
+            case blue_marker: 
+                if (!check_plates(blue_plate)){
+                    gs.middle_entities[loc] = blue_wall;
                 }
             break;
-            case yellow_wall: 
-                if (check_plates(yellow_plate)){
-                    gs.middle_entities[loc] = yellow_marker;
+            case blue_wall: 
+                if (check_plates(blue_plate)){
+                    gs.middle_entities[loc] = blue_marker;
                 }
             break;
             case green_marker: 
@@ -522,13 +522,13 @@ void win_screen(){
 //returns true if all are pressed
 bool check_plates(entity_id plate){
     int loc = 0;
-    if (plate != red_plate && plate != yellow_plate && plate != green_plate){
+    if (plate != red_plate && plate != blue_plate && plate != green_plate){
         printf("Checking plates on a non plate\n");
         exit(1);
     }
     for (; loc < gs.width * gs.height; loc++){
         if (gs.lower_entities[loc] == plate) {
-            if (gs.upper_entities[loc] != bomb && gs.upper_entities[loc] != boomer && gs.upper_entities[loc] != metal_box && gs.upper_entities[loc] != wood_box && gs.upper_entities[loc] != bomb_box) {
+            if (gs.upper_entities[loc] != bomb && gs.upper_entities[loc] != frog && gs.upper_entities[loc] != metal_box && gs.upper_entities[loc] != wood_box && gs.upper_entities[loc] != bomb_box) {
                 return false;
             }
         }
@@ -540,7 +540,7 @@ bool check_win(){
     int loc = 0;
     for (; loc < gs.width * gs.height; loc++){
         if (gs.lower_entities[loc] == goal) {
-            if (gs.upper_entities[loc] == boomer) {
+            if (gs.upper_entities[loc] == frog) {
                 return true;
             }
         }

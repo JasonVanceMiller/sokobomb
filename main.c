@@ -55,16 +55,22 @@ int main() {
 
     SetConfigFlags(FLAG_MSAA_4X_HINT);
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Boomer Boy!");
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Sokobomb!");
     SetTargetFPS(60);
 
+    //InitAudioDevice(); //TODO
     //Vector2 mouse   = GetMousePosition();
     //bool mouse_down     = false;
     input inputs = {0};
     action move;
     
+    //Music music = LoadMusicStream("western.mp3"); //TODO
+    //PlayMusicStream(music);
+
     char str[20];
     while (!WindowShouldClose()) {
+        //UpdateMusicStream(music); //TODO
+
         SCREEN_WIDTH = GetScreenWidth();
         SCREEN_HEIGHT = GetScreenHeight();
         //GET INPUT
@@ -77,7 +83,7 @@ int main() {
         BeginDrawing();
 
         ClearBackground(DARKBLUE);
-        DrawText("WASD to move. E to place / explode bomb. R to reset. Z to undo. Esc to close.", 5, 5, 30, BLACK);
+        DrawText("WASD to move. E to place / explode bomb. R to reset. Z to undo.", 10, 10, 30, BLACK);
         sprintf(str, "Level %d / %d", level_index + 1, sizeof(levels) / sizeof(game_state));
         DrawText(str, 5, 50, 30, BLACK);
         if (err) {
@@ -106,6 +112,8 @@ int main() {
             }
         }
     }
+    //UnloadMusicStream(music); TODO
+    //CloseAudioDevice(); TODO
     CloseWindow();
     return 0;
 }
