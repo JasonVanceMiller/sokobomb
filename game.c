@@ -168,19 +168,17 @@ Color entity_draw_dispatch(int loc, int x, int y, int cell_size, entity_id e){
     switch(e){
         case ground: 
             DrawTexturePro(SPRITE_SHEET, (Rectangle){16,0,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
-            draw_marker(x, y, cell_size);
             //ALREADY DRAWN
         break;
         case boomer: 
             DrawTexturePro(SPRITE_SHEET, (Rectangle){32,0,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
-            draw_marker(x, y, cell_size);
             //ALREADY DRAWN
             if (gs.holding_bomb) {
-                draw_bomb(x, y, cell_size);
+                DrawTexturePro(SPRITE_SHEET, (Rectangle){48,0,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
             }
         break;
         case bomb: 
-            draw_bomb(x, y, cell_size);
+            DrawTexturePro(SPRITE_SHEET, (Rectangle){48,0,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
         break;
         case goal: 
             //draw ground first
