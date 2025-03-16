@@ -12,6 +12,9 @@ build/index.html: build/shell.html main.c game.h game.c input.h input.c levels.h
 run: sokobomb 
 	LD_LIBRARY_PATH=$LD_LIBRARY_PATH:../raylib/lib/ ./sokobomb      
 
+debug: sokobomb 
+	LD_LIBRARY_PATH=$LD_LIBRARY_PATH:../raylib/lib/ gdb ./sokobomb      
+
 clean:  
 	rm sokobomb; rm sokobomb.exe; rm sokobomb.zip; rm build/index.html
 

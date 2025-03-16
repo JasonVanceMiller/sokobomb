@@ -38,9 +38,9 @@ struct game_state {
     bool holding_bomb;
     int width;
     int height;
-    entity_id lower_entities[200]; //TODO
-    entity_id middle_entities[200]; //TODO
-    entity_id upper_entities[200]; //TODO
+    entity_id lower_entities[500]; //TODO
+    entity_id middle_entities[500]; //TODO
+    entity_id upper_entities[500]; //TODO
 };
 typedef struct game_state game_state;
 
@@ -51,7 +51,7 @@ struct game_state_history {
 typedef struct game_state_history game_state_history;
 //GLOBALS
 
-extern game_state levels[20];
+extern game_state levels[25];
 extern int level_index;
 extern game_state gs;
 extern game_state_history* gsh;

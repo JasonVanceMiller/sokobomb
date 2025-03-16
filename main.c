@@ -13,7 +13,7 @@
 
 bool win_pause = false;
 
-game_state levels[20];
+game_state levels[25];
 int level_index;
 game_state gs;
 game_state_history* gsh;
@@ -23,27 +23,53 @@ int main() {
     bool err = false;
     int win_timer = 0;
     level_index = 0;
+
+    //levels[level_index++] = level_load(level_test);
+    //MOVEMENT LEVELS
     levels[level_index++] = level_load(level_first);
     levels[level_index++] = level_load(level_gap);
-    levels[level_index++] = level_load(level_jump);
+    levels[level_index++] = level_load(level_gaps);
+    //INTRO TO BOXES FOR MOVEMENT 
+    
+    //INTRO TO BOXES ON PLATES
     levels[level_index++] = level_load(level_plate);
     levels[level_index++] = level_load(level_box);
     levels[level_index++] = level_load(level_box2);
     levels[level_index++] = level_load(level_box3);
-    levels[level_index++] = level_load(level_plate3);
+    levels[level_index++] = level_load(level_box4);
+
+    levels[level_index++] = level_load(level_island);
+    levels[level_index++] = level_load(level_island2);
+    //levels[level_index++] = level_load(level_island3);
+    //levels[level_index++] = level_load(level_island4);
+    //levels[level_index++] = level_load(level_island5);
+
     levels[level_index++] = level_load(level_plate2);
+    levels[level_index++] = level_load(level_plate3);
+
+
+    //UNSTICKING A BOX
     levels[level_index++] = level_load(level_stuck);
+    levels[level_index++] = level_load(level_stuck2);
     levels[level_index++] = level_load(level_zigzag);
+    levels[level_index++] = level_load(level_zigzag2);
+    levels[level_index++] = level_load(level_bridge);
     levels[level_index++] = level_load(level_good);
+    levels[level_index++] = level_load(level_halved);
+
+    //MULTI COLORED
+
     //levels[level_index++] = level_load(level_bad);
     levels[level_index++] = level_load(level_multi);
-    levels[level_index++] = level_load(level_maze);
-    levels[level_index++] = level_load(level_unlock2);
+    //levels[level_index++] = level_load(level_maze);
+    //levels[level_index++] = level_load(level_onion);
     levels[level_index++] = level_load(level_quirky);
-    levels[level_index++] = level_load(level_breeze);
+    levels[level_index++] = level_load(level_unlock2);
+    levels[level_index++] = level_load(level_unlock_xx);
     levels[level_index++] = level_load(level_block_free);
-    levels[level_index++] = level_load(level_halfway);
-    levels[level_index++] = level_load(level_unlock);
+    //levels[level_index++] = level_load(level_unlock);
+    //levels[level_index++] = level_load(level_unlock_x);
+    levels[level_index++] = level_load(level_unlock_variant);
     //levels[level_index++] = level_load(level_joseph); // BROKEN
     //levels[level_index++] = level_load(level_pinch);
     //levels[level_index++] = level_load(level_tennis);
@@ -83,7 +109,7 @@ int main() {
         BeginDrawing();
 
         ClearBackground(DARKBLUE);
-        DrawText("WASD to move. E to place / explode bomb. R to reset. Z to undo.", 10, 10, 30, BLACK);
+        DrawText("WASD or Arrow Keys to move. E to place / explode bomb. R to reset. Z to undo.", 10, 10, 30, BLACK);
         sprintf(str, "Level %d / %d", level_index + 1, sizeof(levels) / sizeof(game_state));
         DrawText(str, 5, 50, 30, BLACK);
         if (err) {
@@ -103,7 +129,7 @@ int main() {
                 win_pause = false;
                 level_index++;
                 if (level_index == sizeof(levels) / sizeof(game_state)) {
-                    win_screen();
+                    win_screen(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
                     break;
                 }
                 gs = levels[level_index];

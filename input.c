@@ -17,10 +17,10 @@ void button_update(button* b, bool press) {
 }
 
 void input_set(input* input){
-    button_update(&(input->up),              IsKeyDown(KEY_W));
-    button_update(&(input->down),            IsKeyDown(KEY_S));
-    button_update(&(input->left),            IsKeyDown(KEY_A)); 
-    button_update(&(input->right),           IsKeyDown(KEY_D));
+    button_update(&(input->up),              IsKeyDown(KEY_UP)   || IsKeyDown(KEY_W));
+    button_update(&(input->down),            IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S));
+    button_update(&(input->left),            IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)); 
+    button_update(&(input->right),           IsKeyDown(KEY_RIGHT)|| IsKeyDown(KEY_D));
     button_update(&(input->interact),        IsKeyDown(KEY_E));
     button_update(&(input->reset),           IsKeyDown(KEY_R));
     button_update(&(input->undo),            IsKeyDown(KEY_Z));

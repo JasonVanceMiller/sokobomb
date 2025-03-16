@@ -119,6 +119,21 @@ game_state level_load(const char* level){
                 out_gs.middle_entities[loc] = green_marker;
                 out_gs.upper_entities[loc] = empty;
             break;
+            case '1':
+                out_gs.lower_entities[loc] = red_plate;
+                out_gs.middle_entities[loc] = empty;
+                out_gs.upper_entities[loc] = metal_box;
+            break;
+            case '2':
+                out_gs.lower_entities[loc] = green_plate;
+                out_gs.middle_entities[loc] = empty;
+                out_gs.upper_entities[loc] = metal_box;
+            break;
+            case '3':
+                out_gs.lower_entities[loc] = blue_plate;
+                out_gs.middle_entities[loc] = empty;
+                out_gs.upper_entities[loc] = metal_box;
+            break;
             default: 
                 loc--;
                 if (i >= len) {
@@ -171,10 +186,11 @@ Color entity_draw_dispatch(int loc, int x, int y, int cell_size, entity_id e){
             //ALREADY DRAWN
         break;
         case frog: 
-            DrawTexturePro(SPRITE_SHEET, (Rectangle){32,0,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
             //ALREADY DRAWN
             if (gs.holding_bomb) {
-                DrawTexturePro(SPRITE_SHEET, (Rectangle){48,0,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+                DrawTexturePro(SPRITE_SHEET, (Rectangle){80,48,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+            } else {
+                DrawTexturePro(SPRITE_SHEET, (Rectangle){32,0,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
             }
         break;
         case bomb: 
@@ -247,6 +263,7 @@ Color entity_draw_dispatch(int loc, int x, int y, int cell_size, entity_id e){
             DrawTexturePro(SPRITE_SHEET, (Rectangle){0,32,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
         break;
         case bomb_box: 
+            DrawTexturePro(SPRITE_SHEET, (Rectangle){16,32,16,16}, (Rectangle){x,y,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
         break;
         default: 
         break;
@@ -271,7 +288,7 @@ bool state_move(action move){
     if (move == level_next) {
         level_index++;
         if (level_index >= sizeof(levels) / sizeof(game_state)) {
-            level_index = (sizeof(levels) / sizeof(game_state)) - 1;
+            level_index = 0;
         }
         gs = levels[level_index];
         game_state_history_clear();
@@ -281,7 +298,7 @@ bool state_move(action move){
     if (move == level_previous) {
         level_index--;
         if (level_index < 0) {
-            level_index = 0;
+            level_index = sizeof(levels) / sizeof(game_state) - 1;
         }
         gs = levels[level_index];
         game_state_history_clear();
@@ -356,6 +373,7 @@ bool push(int loc, int offset){
 
 //We will only interact with items on our level, and the trust state_update to do gravity based interactions
 bool push_wrapped(int loc, int offset, int depth){
+    //This stops you when you are inside the wall
     if (gs.middle_entities[loc] == red_wall || gs.middle_entities[loc] == blue_wall || gs.middle_entities[loc] == green_wall) {
         return false;
     }
@@ -383,6 +401,7 @@ bool push_wrapped(int loc, int offset, int depth){
             }
         break;
         case wall: 
+        case goal: 
             return false;
         break;
     }
@@ -407,7 +426,8 @@ void launch (int loc, int offset){
                 return;
             }
             int steps = 1;
-            for (;steps < 5; steps++) {
+            //LAUNCH FOREVER
+            while(true) {
                 if (gs.upper_entities[loc + steps * offset] != empty || 
                     gs.middle_entities[loc + steps * offset] == red_wall ||
                     gs.middle_entities[loc + steps * offset] == blue_wall ||
@@ -415,6 +435,26 @@ void launch (int loc, int offset){
                     //HIT A THING
                     break;
                 }
+                if (offset == -1 && (loc + steps * offset) % gs.width == 0) {
+                    //left edge and still moving. Error out of bounds 
+                    gs.upper_entities[loc] = empty;
+                    return;
+                } else if (offset == 1 && (loc + steps * offset) % gs.width == gs.width - 1) {
+                    //right edge and still moving. Error out of bounds 
+                    gs.upper_entities[loc] = empty;
+                    return;
+
+                } else if (offset == -1 * gs.width && (loc + steps * offset) / gs.width == 0) {
+                    //top edge and still moving. Error out of bounds 
+                    gs.upper_entities[loc] = empty;
+                    return;
+
+                } else if (offset == gs.width && (loc + steps * offset) / gs.width == gs.height - 1) {
+                    //bottom edge and still moving. Error out of bounds 
+                    gs.upper_entities[loc] = empty;
+                    return;
+                }
+                steps++;
             }
             steps--;
             if (steps > 0){
@@ -468,7 +508,7 @@ void state_update(){
                 gs.upper_entities[loc] = empty;
             break;
             case empty: 
-                //gs.upper_entities[loc] = empty;
+                gs.upper_entities[loc] = empty;
             break;
         }
         switch (gs.middle_entities[loc]) {
@@ -508,11 +548,11 @@ void state_update(){
 
 //STATUS
 
-void win_screen(){
+void win_screen(int x_offset, int y_offset){
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(GREEN);
-        DrawText("YOU WIN!!!! AMAZING JOB!!!!", 550, 500, 40, BLACK);
+        DrawText("YOU WIN!!!! AMAZING JOB!!!!", x_offset - 350, y_offset, 40, BLACK);
 
         EndDrawing();
     }
