@@ -262,7 +262,7 @@ const char* level_good =
 "..WWW.WWW..\n"
 "..W%WWW_W..\n"
 "..W_r___W..\n"
-".WWWW_P_WW.\n"
+".WWW__P_WW.\n"
 ".WrP_F___W.\n"
 ".W_m____WW.\n"
 ".WWWWW_WW..\n"

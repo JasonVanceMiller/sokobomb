@@ -24,9 +24,8 @@ int main() {
     int win_timer = 0;
     level_index = 0;
 
-    //levels[level_index++] = level_load(level_test);
     //MOVEMENT LEVELS
-    levels[level_index++] = level_load(level_test);
+    //levels[level_index++] = level_load(level_test);
     levels[level_index++] = level_load(level_first);
     levels[level_index++] = level_load(level_gap);
     levels[level_index++] = level_load(level_gaps);
@@ -62,7 +61,7 @@ int main() {
     levels[level_index++] = level_load(level_unlock2);
     levels[level_index++] = level_load(level_unlock_xx);
     levels[level_index++] = level_load(level_block_free);
-    //levels[level_index++] = level_load(level_unlock_variant);
+    levels[level_index++] = level_load(level_unlock_variant);
     level_index = 0;
     gs = levels[level_index];
     state_update();
