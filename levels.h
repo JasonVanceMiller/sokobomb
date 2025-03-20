@@ -262,7 +262,7 @@ const char* level_good =
 "..WWW.WWW..\n"
 "..W%WWW_W..\n"
 "..W_r___W..\n"
-".WWW__P_WW.\n"
+".WWWW_P_WW.\n"
 ".WrP_F___W.\n"
 ".W_m____WW.\n"
 ".WWWWW_WW..\n"
@@ -284,9 +284,9 @@ const char* level_multi =
 "...............\n"
 ".WWWWWWWWWWWWW.\n"
 ".W__W__WWW___W.\n"
-".W__R__BRP___W.\n"
-".WFrRmbBRP_#_W.\n"
-".W__R__BRP___W.\n"
+".W__R__BPR___W.\n"
+".WFrRmbBPR_#_W.\n"
+".W__R__BPR___W.\n"
 ".W__W__WWW___W.\n"
 ".WWWWWWWWWWWWW.\n"
 "...............";
@@ -329,11 +329,11 @@ const char* level_unlock_x =
 
 const char* level_unlock_xx = 
 ".........\n"
-"...WWWWW.\n"
-".WWWW__W.\n"
+".WWWWWWW.\n"
+".WrWW__W.\n"
 ".WBb___W.\n"
-".WrWm_WW.\n"
-".WW%F_W..\n"
+".WWWm_WW.\n"
+"..W%F_W..\n"
 "..WWWWW..\n"
 ".........";
 

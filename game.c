@@ -615,6 +615,15 @@ void entity_draw_dispatch_static(int x, int y, int starting_x, int starting_y, i
         DrawTexturePro(STATIC_SHEET, (Rectangle){144,64,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
         return;
     }
+    // Annoying edge cases
+    if (upper_left == wall && upper_right == ground && lower_left == ground && lower_right == empty) {
+        DrawTexturePro(STATIC_SHEET, (Rectangle){128,0,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+        return;
+    }
+    if (upper_left == ground && upper_right == empty && lower_left == ground && lower_right == wall) {
+        DrawTexturePro(STATIC_SHEET, (Rectangle){144,0,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+        return;
+    }
     return;
 }
 
