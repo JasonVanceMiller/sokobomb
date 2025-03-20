@@ -13,22 +13,18 @@ enum entity_id {
     goal, 
     pit, 
     pit_bloody, 
-    pit_wood_box, 
     pit_metal_box, 
-    pit_bomb_box, 
     wall, 
-    wood_box,
     metal_box,
-    bomb_box,
     red_plate, 
     red_marker, 
     red_wall, 
     blue_plate, 
     blue_marker, 
     blue_wall, 
-    green_plate, 
-    green_marker, 
-    green_wall, 
+    indigo_plate, 
+    indigo_marker, 
+    indigo_wall, 
     entity_id_count
 };
 typedef enum entity_id entity_id;
@@ -38,8 +34,12 @@ struct game_state {
     bool holding_bomb;
     int width;
     int height;
+    int depth;
+    //lower entities are floor stuffs
     entity_id lower_entities[500]; //TODO
+    //middle entites are the gates
     entity_id middle_entities[500]; //TODO
+    //upper entiteis are typically pushable
     entity_id upper_entities[500]; //TODO
 };
 typedef struct game_state game_state;
@@ -68,7 +68,9 @@ static int PADDING  = 100;
 game_state level_load(const char*);
 
 void state_draw();
-Color entity_draw_dispatch(int loc, int x, int y, int cell_size, entity_id e);
+void entity_draw_dispatch_dynamic(int loc, int x, int y, int cell_size, entity_id e);
+void entity_draw_dispatch_pit(int loc, int x, int y, int cell_size, entity_id e);
+void entity_draw_dispatch_static(x, y, starting_x, starting_y, cell_size);
 
 bool state_move(action move);
 bool push(int loc, int offset);

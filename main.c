@@ -26,6 +26,7 @@ int main() {
 
     //levels[level_index++] = level_load(level_test);
     //MOVEMENT LEVELS
+    levels[level_index++] = level_load(level_test);
     levels[level_index++] = level_load(level_first);
     levels[level_index++] = level_load(level_gap);
     levels[level_index++] = level_load(level_gaps);
@@ -40,9 +41,6 @@ int main() {
 
     levels[level_index++] = level_load(level_island);
     levels[level_index++] = level_load(level_island2);
-    //levels[level_index++] = level_load(level_island3);
-    //levels[level_index++] = level_load(level_island4);
-    //levels[level_index++] = level_load(level_island5);
 
     levels[level_index++] = level_load(level_plate2);
     levels[level_index++] = level_load(level_plate3);
@@ -59,20 +57,12 @@ int main() {
 
     //MULTI COLORED
 
-    //levels[level_index++] = level_load(level_bad);
     levels[level_index++] = level_load(level_multi);
-    //levels[level_index++] = level_load(level_maze);
-    //levels[level_index++] = level_load(level_onion);
     levels[level_index++] = level_load(level_quirky);
     levels[level_index++] = level_load(level_unlock2);
     levels[level_index++] = level_load(level_unlock_xx);
     levels[level_index++] = level_load(level_block_free);
-    //levels[level_index++] = level_load(level_unlock);
-    //levels[level_index++] = level_load(level_unlock_x);
-    levels[level_index++] = level_load(level_unlock_variant);
-    //levels[level_index++] = level_load(level_joseph); // BROKEN
-    //levels[level_index++] = level_load(level_pinch);
-    //levels[level_index++] = level_load(level_tennis);
+    //levels[level_index++] = level_load(level_unlock_variant);
     level_index = 0;
     gs = levels[level_index];
     state_update();
