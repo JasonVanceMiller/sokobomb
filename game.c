@@ -259,7 +259,7 @@ void entity_draw_dispatch_hole(int loc, int x, int y, int cell_size, entity_id e
         case pit: 
         case pit_bloody: 
         case pit_metal_box: 
-            DrawRectangle(x, y, cell_size, cell_size, (Color){30,30,30,255});
+            DrawRectangle(x, y, cell_size, cell_size, (Color){20,20,20,255});
         break;
     }
 }
