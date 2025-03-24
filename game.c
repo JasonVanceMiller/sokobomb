@@ -147,20 +147,21 @@ game_state level_load(const char* level){
 void state_draw(){
     int vertical_space = SCREEN_HEIGHT - 2 * PADDING;
     int horrizontal_space = SCREEN_WIDTH - 2 * PADDING;
-    int cell_size = vertical_space / (gs.height + 2);
+    int cell_size;
+    //int cell_size = vertical_space / (gs.height + 2);
     int starting_x;
     int starting_y;
-    if (cell_size <= horrizontal_space / (gs.width + 2)) {
-        //Tall
-        cell_size -= cell_size % 2;
+    if ((horrizontal_space / gs.width) < (vertical_space / gs.height)) {
+        //WIDE 
+        cell_size = horrizontal_space / (gs.width + 2);
         starting_x = (SCREEN_WIDTH - gs.width * cell_size) / 2;
-        starting_y = PADDING;
-    } else {
-        //Wide
-        cell_size = horrizontal_space / (gs.width);
-        cell_size -= cell_size % 2;
         starting_y = (SCREEN_HEIGHT - gs.height * cell_size) / 2;
-        starting_x = PADDING;
+
+    } else {
+        //TALL
+        cell_size = vertical_space / (gs.height + 2);
+        starting_x = (SCREEN_WIDTH - gs.width * cell_size) / 2;
+        starting_y = (SCREEN_HEIGHT - gs.height * cell_size) / 2;
     }
     for (int x = 0; x < gs.width; x++){
         for (int y = 0; y < gs.height; y++){
@@ -184,102 +185,98 @@ void entity_draw_dispatch(int x, int y, int starting_x, int starting_y, int cell
     switch (entity) {
         //STATICS
         case ground:
-            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,0,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,0,48,48}, (Rectangle){starting_x + x * cell_size - cell_size, starting_y + y * cell_size - cell_size, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
             break;
         case wall:
-            if ((*entities)[(y+1) * gs.width + x] == wall){
-                DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){48,0,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
-            } else {
-                DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){144,0,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
-            }
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){48,0,48,48}, (Rectangle){starting_x + x * cell_size - cell_size, starting_y + y * cell_size - cell_size, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
             break;
         case goal:
-            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,0,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
-            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){96,0,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,0,48,48}, (Rectangle){starting_x + x * cell_size - cell_size, starting_y + y * cell_size - cell_size, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){96,0,48,48}, (Rectangle){starting_x + x * cell_size - cell_size, starting_y + y * cell_size - cell_size, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
             break;
 
         //PITS
         case pit:
-            DrawRectangle(starting_x + x * cell_size + cell_size, starting_y + y * cell_size + cell_size, cell_size, cell_size, (Color){20,20,20,255});
-            if ((*entities)[(y-1) * gs.width + x] != pit && (*entities)[(y-1) * gs.width + x] != pit_bloody && (*entities)[(y-1) * gs.width + x] != pit_metal_box){
-                DrawRectangle(starting_x + x * cell_size + cell_size, starting_y + y * cell_size + cell_size, cell_size, cell_size * 0.25, (Color){40,40,40,255});
+            DrawRectangle(starting_x + x * cell_size, starting_y + y * cell_size, cell_size, cell_size, (Color){20,20,20,255});
+            if (y == 0 || ((*entities)[(y-1) * gs.width + x] != pit && (*entities)[(y-1) * gs.width + x] != pit_bloody && (*entities)[(y-1) * gs.width + x] != pit_metal_box)){
+                DrawRectangle(starting_x + x * cell_size, starting_y + y * cell_size, cell_size, cell_size * 0.25, (Color){40,40,40,255});
             }
-            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,48,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,48,48,48}, (Rectangle){starting_x + x * cell_size - cell_size, starting_y + y * cell_size - cell_size, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
             break;
         case pit_bloody:
-            DrawRectangle(starting_x + x * cell_size + cell_size, starting_y + y * cell_size + cell_size, cell_size, cell_size, (Color){20,20,20,255});
-            if ((*entities)[(y-1) * gs.width + x] != pit && (*entities)[(y-1) * gs.width + x] != pit_bloody && (*entities)[(y-1) * gs.width + x] != pit_metal_box){
-                DrawRectangle(starting_x + x * cell_size + cell_size, starting_y + y * cell_size + cell_size, cell_size, cell_size * 0.25, (Color){40,40,40,255});
+            DrawRectangle(starting_x + x * cell_size, starting_y + y * cell_size, cell_size, cell_size, (Color){20,20,20,255});
+            if (y == 0 || ((*entities)[(y-1) * gs.width + x] != pit && (*entities)[(y-1) * gs.width + x] != pit_bloody && (*entities)[(y-1) * gs.width + x] != pit_metal_box)){
+                DrawRectangle(starting_x + x * cell_size, starting_y + y * cell_size, cell_size, cell_size * 0.25, (Color){40,40,40,255});
             }
-            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){48,48,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){48,48,48,48}, (Rectangle){starting_x + x * cell_size - cell_size, starting_y + y * cell_size - cell_size, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
             break;
         case pit_metal_box:
-            DrawRectangle(starting_x + x * cell_size + cell_size, starting_y + y * cell_size + cell_size, cell_size, cell_size, (Color){20,20,20,255});
-            if ((*entities)[(y-1) * gs.width + x] != pit && (*entities)[(y-1) * gs.width + x] != pit_bloody && (*entities)[(y-1) * gs.width + x] != pit_metal_box){
-                DrawRectangle(starting_x + x * cell_size + cell_size, starting_y + y * cell_size + cell_size, cell_size, cell_size * 0.25, (Color){40,40,40,255});
+            DrawRectangle(starting_x + x * cell_size, starting_y + y * cell_size, cell_size, cell_size, (Color){20,20,20,255});
+            if (y == 0 || ((*entities)[(y-1) * gs.width + x] != pit && (*entities)[(y-1) * gs.width + x] != pit_bloody && (*entities)[(y-1) * gs.width + x] != pit_metal_box)){
+                DrawRectangle(starting_x + x * cell_size, starting_y + y * cell_size, cell_size, cell_size * 0.25, (Color){40,40,40,255});
             }
-            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,48,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
-            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){96,48,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,48,48,48}, (Rectangle){starting_x + x * cell_size - cell_size, starting_y + y * cell_size - cell_size, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){96,48,48,48}, (Rectangle){starting_x + x * cell_size - cell_size, starting_y + y * cell_size - cell_size, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
             break;
 
         //DYNAMICS
         case frog: 
             if (!gs.holding_bomb) {
-                DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,96,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+                DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,96,48,48}, (Rectangle){starting_x + x * cell_size - cell_size, starting_y + y * cell_size - cell_size, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
             } else {
-                DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){48,96,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+                DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){48,96,48,48}, (Rectangle){starting_x + x * cell_size - cell_size, starting_y + y * cell_size - cell_size, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
             }
             break;
         case bomb:
-            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){96,96,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){96,96,48,48}, (Rectangle){starting_x + x * cell_size - cell_size, starting_y + y * cell_size - cell_size, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
             break;
         case metal_box:
-            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){144,96,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){144,96,48,48}, (Rectangle){starting_x + x * cell_size - cell_size, starting_y + y * cell_size - cell_size, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
             break;
             
         //RED PRESSURE PLATES 
         case red_plate:
-            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,0,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
-            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,192,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,0,48,48}, (Rectangle){starting_x + x * cell_size - cell_size, starting_y + y * cell_size - cell_size, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,192,48,48}, (Rectangle){starting_x + x * cell_size - cell_size, starting_y + y * cell_size - cell_size, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
             if(gs.upper_entities[loc] == frog || gs.upper_entities[loc] == bomb || gs.upper_entities[loc] == metal_box){
-                DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,144,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+                DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,144,48,48}, (Rectangle){starting_x + x * cell_size - cell_size, starting_y + y * cell_size - cell_size, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
             }
             break;
         case red_marker:
-            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){48,192,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){48,192,48,48}, (Rectangle){starting_x + x * cell_size - cell_size, starting_y + y * cell_size - cell_size, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
             break;
         case red_wall:
-            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){96,192,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){96,192,48,48}, (Rectangle){starting_x + x * cell_size - cell_size, starting_y + y * cell_size - cell_size, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
             break;
 
         //BLUE PRESSURE PLATES 
         case blue_plate:
-            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,0,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
-            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,240,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,0,48,48}, (Rectangle){starting_x + x * cell_size - cell_size, starting_y + y * cell_size - cell_size, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,240,48,48}, (Rectangle){starting_x + x * cell_size - cell_size, starting_y + y * cell_size - cell_size, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
             if(gs.upper_entities[loc] == frog || gs.upper_entities[loc] == bomb || gs.upper_entities[loc] == metal_box){
-                DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,144,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+                DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,144,48,48}, (Rectangle){starting_x + x * cell_size - cell_size, starting_y + y * cell_size - cell_size, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
             }
             break;
         case blue_marker:
-            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){48,240,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){48,240,48,48}, (Rectangle){starting_x + x * cell_size - cell_size, starting_y + y * cell_size - cell_size, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
             break;
         case blue_wall:
-            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){96,240,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){96,240,48,48}, (Rectangle){starting_x + x * cell_size - cell_size, starting_y + y * cell_size - cell_size, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
             break;
 
         //INDIGO PRESSURE PLATES 
         case indigo_plate:
-            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,0,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
-            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,288,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,0,48,48}, (Rectangle){starting_x + x * cell_size - cell_size, starting_y + y * cell_size - cell_size, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,288,48,48}, (Rectangle){starting_x + x * cell_size - cell_size, starting_y + y * cell_size - cell_size, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
             if(gs.upper_entities[loc] == frog || gs.upper_entities[loc] == bomb || gs.upper_entities[loc] == metal_box){
-                DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,144,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+                DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,144,48,48}, (Rectangle){starting_x + x * cell_size - cell_size, starting_y + y * cell_size - cell_size, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
             }
             break;
         case indigo_marker:
-            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){48,288,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){48,288,48,48}, (Rectangle){starting_x + x * cell_size - cell_size, starting_y + y * cell_size - cell_size, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
             break;
         case indigo_wall:
-            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){96,288,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){96,288,48,48}, (Rectangle){starting_x + x * cell_size - cell_size, starting_y + y * cell_size - cell_size, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
             break;
     }
     return;
