@@ -1,5 +1,5 @@
-#include "game.h"
 
+#include "game.h"
 #include <stdio.h> 
 #include <stdlib.h> 
 #include <string.h> 
@@ -9,9 +9,11 @@ int SCREEN_HEIGHT = 1600;
 
 bool SPRITE_SHEET_INIT = false;
 bool STATIC_SHEET_INIT = false;
+bool SPACED_SPRITE_SHEET_INIT = false;
 
 Texture2D SPRITE_SHEET;
 Texture2D STATIC_SHEET;
+Texture2D SPACED_SPRITE_SHEET;
 //LEVEL LOADING
 game_state level_load(const char* level){
     int len = strlen(level);
@@ -145,47 +147,60 @@ game_state level_load(const char* level){
 void state_draw(){
     int vertical_space = SCREEN_HEIGHT - 2 * PADDING;
     int horrizontal_space = SCREEN_WIDTH - 2 * PADDING;
-    int cell_size = vertical_space / gs.height;
+    int cell_size = vertical_space / (gs.height + 2);
     int starting_x;
     int starting_y;
-    if (cell_size <= horrizontal_space / gs.width) {
+    if (cell_size <= horrizontal_space / (gs.width + 2)) {
         //Tall
         cell_size -= cell_size % 2;
         starting_x = (SCREEN_WIDTH - gs.width * cell_size) / 2;
         starting_y = PADDING;
     } else {
         //Wide
-        cell_size = horrizontal_space / gs.width;
+        cell_size = horrizontal_space / (gs.width);
         cell_size -= cell_size % 2;
         starting_y = (SCREEN_HEIGHT - gs.height * cell_size) / 2;
         starting_x = PADDING;
     }
     for (int x = 0; x < gs.width; x++){
         for (int y = 0; y < gs.height; y++){
-            int loc = x + y * gs.width;
-            entity_draw_dispatch_hole(loc, starting_x + x * cell_size, starting_y + y * cell_size, cell_size, gs.lower_entities[x + y * gs.width]);
+            entity_draw_dispatch(x, y, starting_x, starting_y, cell_size, &(gs.lower_entities));
+            entity_draw_dispatch(x, y, starting_x, starting_y, cell_size, &(gs.upper_entities));
+            entity_draw_dispatch(x, y, starting_x, starting_y, cell_size, &(gs.middle_entities));
         }
     }
-    for (int x = 0; x < gs.width; x++){
-        for (int y = 0; y < gs.height; y++){
-            entity_draw_dispatch_static(x, y, starting_x, starting_y, cell_size);
-        }
-    }
-    for (int x = 0; x < gs.width; x++){
-        for (int y = 0; y < gs.height; y++){
-            int loc = x + y * gs.width;
-            entity_draw_dispatch_pit(loc, starting_x + x * cell_size, starting_y + y * cell_size, cell_size, gs.lower_entities[x + y * gs.width]);
-        }
-    }
-    for (int x = 0; x < gs.width; x++){
-        for (int y = 0; y < gs.height; y++){
-            int loc = x + y * gs.width;
-            //TODO why is middle after upper
-            entity_draw_dispatch_dynamic(loc, starting_x + x * cell_size, starting_y + y * cell_size, cell_size, gs.lower_entities[x + y * gs.width]);
-            entity_draw_dispatch_dynamic(loc, starting_x + x * cell_size, starting_y + y * cell_size, cell_size, gs.upper_entities[x + y * gs.width]);
-            entity_draw_dispatch_dynamic(loc, starting_x + x * cell_size, starting_y + y * cell_size, cell_size, gs.middle_entities[x + y * gs.width]);
-        }
-    }
+    //for (int x = 0; x < gs.width; x++){
+    //    for (int y = 0; y < gs.height; y++){
+    //        int loc = x + y * gs.width;
+    //        entity_draw_dispatch_hole(loc, starting_x + x * cell_size, starting_y + y * cell_size, cell_size, gs.lower_entities[x + y * gs.width]);
+    //    }
+    //}
+    //for (int x = 0; x < gs.width; x++){
+    //    for (int y = 0; y < gs.height; y++){
+    //        int loc = x + y * gs.width;
+    //        entity_draw_dispatch_hole(loc, starting_x + x * cell_size, starting_y + y * cell_size, cell_size, gs.lower_entities[x + y * gs.width]);
+    //    }
+    //}
+    //for (int x = 0; x < gs.width; x++){
+    //    for (int y = 0; y < gs.height; y++){
+    //        entity_draw_dispatch_static(x, y, starting_x, starting_y, cell_size);
+    //    }
+    //}
+    //for (int x = 0; x < gs.width; x++){
+    //    for (int y = 0; y < gs.height; y++){
+    //        int loc = x + y * gs.width;
+    //        entity_draw_dispatch_pit(loc, starting_x + x * cell_size, starting_y + y * cell_size, cell_size, gs.lower_entities[x + y * gs.width]);
+    //    }
+    //}
+    //for (int x = 0; x < gs.width; x++){
+    //    for (int y = 0; y < gs.height; y++){
+    //        int loc = x + y * gs.width;
+    //        //TODO why is middle after upper
+    //        entity_draw_dispatch_dynamic(loc, starting_x + x * cell_size, starting_y + y * cell_size, cell_size, gs.lower_entities[x + y * gs.width]);
+    //        entity_draw_dispatch_dynamic(loc, starting_x + x * cell_size, starting_y + y * cell_size, cell_size, gs.upper_entities[x + y * gs.width]);
+    //        entity_draw_dispatch_dynamic(loc, starting_x + x * cell_size, starting_y + y * cell_size, cell_size, gs.middle_entities[x + y * gs.width]);
+    //    }
+    //}
 }
 void entity_draw_dispatch_dynamic(int loc, int x, int y, int cell_size, entity_id e){
     if (!SPRITE_SHEET_INIT) {
@@ -656,6 +671,470 @@ void entity_draw_dispatch_static(int x, int y, int starting_x, int starting_y, i
     return;
 }
 
+void entity_draw_dispatch(int x, int y, int starting_x, int starting_y, int cell_size, entity_id (*entities)[500]){
+    if (!SPACED_SPRITE_SHEET_INIT) {
+        SPACED_SPRITE_SHEET = LoadTexture("spaced_sprite_sheet.png");
+        SPACED_SPRITE_SHEET_INIT = true;
+    }
+    //upper left, then upper right, then lower left, then lower right
+    int loc = y * gs.width + x;
+    entity_id entity = (*entities)[loc];
+
+
+    switch (entity) {
+        //STATICS
+        case ground:
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,0,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            break;
+        case wall:
+            if ((*entities)[(y+1) * gs.width + x] == wall){
+                DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){48,0,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            } else {
+                DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){144,0,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            }
+            break;
+        case goal:
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,0,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){96,0,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            break;
+
+        //PITS
+        case pit:
+            DrawRectangle(starting_x + x * cell_size + cell_size, starting_y + y * cell_size + cell_size, cell_size, cell_size, (Color){20,20,20,255});
+            if ((*entities)[(y-1) * gs.width + x] != pit && (*entities)[(y-1) * gs.width + x] != pit_bloody && (*entities)[(y-1) * gs.width + x] != pit_metal_box){
+                DrawRectangle(starting_x + x * cell_size + cell_size, starting_y + y * cell_size + cell_size, cell_size, cell_size * 0.25, (Color){40,40,40,255});
+            }
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,48,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            break;
+        case pit_bloody:
+            DrawRectangle(starting_x + x * cell_size + cell_size, starting_y + y * cell_size + cell_size, cell_size, cell_size, (Color){20,20,20,255});
+            if ((*entities)[(y-1) * gs.width + x] != pit && (*entities)[(y-1) * gs.width + x] != pit_bloody && (*entities)[(y-1) * gs.width + x] != pit_metal_box){
+                DrawRectangle(starting_x + x * cell_size + cell_size, starting_y + y * cell_size + cell_size, cell_size, cell_size * 0.25, (Color){40,40,40,255});
+            }
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){48,48,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            break;
+        case pit_metal_box:
+            DrawRectangle(starting_x + x * cell_size + cell_size, starting_y + y * cell_size + cell_size, cell_size, cell_size, (Color){20,20,20,255});
+            if ((*entities)[(y-1) * gs.width + x] != pit && (*entities)[(y-1) * gs.width + x] != pit_bloody && (*entities)[(y-1) * gs.width + x] != pit_metal_box){
+                DrawRectangle(starting_x + x * cell_size + cell_size, starting_y + y * cell_size + cell_size, cell_size, cell_size * 0.25, (Color){40,40,40,255});
+            }
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,48,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){96,48,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            break;
+
+        //DYNAMICS
+        case frog: 
+            if (!gs.holding_bomb) {
+                DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,96,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            } else {
+                DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){48,96,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            }
+            break;
+        case bomb:
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){96,96,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            break;
+        case metal_box:
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){144,96,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            break;
+            
+        //RED PRESSURE PLATES 
+        case red_plate:
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,0,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,192,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            if(gs.upper_entities[loc] == frog || gs.upper_entities[loc] == bomb || gs.upper_entities[loc] == metal_box){
+                DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,144,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            }
+            break;
+        case red_marker:
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){48,192,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            break;
+        case red_wall:
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){96,192,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            break;
+
+        //BLUE PRESSURE PLATES 
+        case blue_plate:
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,0,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,240,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            if(gs.upper_entities[loc] == frog || gs.upper_entities[loc] == bomb || gs.upper_entities[loc] == metal_box){
+                DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,144,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            }
+            break;
+        case blue_marker:
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){48,240,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            break;
+        case blue_wall:
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){96,240,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            break;
+
+        //INDIGO PRESSURE PLATES 
+        case indigo_plate:
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,0,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,288,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            if(gs.upper_entities[loc] == frog || gs.upper_entities[loc] == bomb || gs.upper_entities[loc] == metal_box){
+                DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){0,144,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            }
+            break;
+        case indigo_marker:
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){48,288,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            break;
+        case indigo_wall:
+            DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){96,288,48,48}, (Rectangle){starting_x + x * cell_size, starting_y + cell_size * y, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
+            break;
+    }
+    return;
+
+    //PITS
+
+    //if (lower_right == pit) {
+    //    //DrawTexturePro(STATIC_SHEET, (Rectangle){64,0,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    lower_right = empty;
+    //}
+    //if (upper_left  == pit_bloody) {
+    //    //DrawTexturePro(STATIC_SHEET, (Rectangle){80,0,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    upper_left = empty;
+    //}
+    //if (upper_right == pit_bloody) {
+    //    //DrawTexturePro(STATIC_SHEET, (Rectangle){80,0,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    upper_right = empty;
+    //}
+    //if (lower_left  == pit_bloody) {
+    //    //DrawTexturePro(STATIC_SHEET, (Rectangle){80,0,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    lower_left = empty;
+    //}
+    //if (lower_right == pit_bloody) {
+    //    //DrawTexturePro(STATIC_SHEET, (Rectangle){80,0,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    lower_right = empty;
+    //}
+    //if (upper_left  == pit_metal_box) {
+    //    //DrawTexturePro(STATIC_SHEET, (Rectangle){96,0,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    upper_left = empty;
+    //}
+    //if (upper_right == pit_metal_box) {
+    //    //DrawTexturePro(STATIC_SHEET, (Rectangle){96,0,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    upper_right = empty;
+    //}
+    //if (lower_left  == pit_metal_box) {
+    //    //DrawTexturePro(STATIC_SHEET, (Rectangle){96,0,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    lower_left = empty;
+    //}
+    //if (lower_right == pit_metal_box) {
+    //    //DrawTexturePro(STATIC_SHEET, (Rectangle){96,0,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    lower_right = empty;
+    //}
+
+    ////Normalizing pressureplates for drawing
+    //if (upper_left != pit && upper_left != wall && upper_left != empty && upper_left != ground) {
+    //    upper_left = ground;
+    //}
+    //if (upper_right != pit && upper_right != wall && upper_right != empty && upper_right != ground) {
+    //    upper_right = ground;
+    //}
+    //if (lower_left != pit && lower_left != wall && lower_left != empty && lower_left != ground) {
+    //    lower_left = ground;
+    //}
+    //if (lower_right != pit && lower_right != wall && lower_right != empty && lower_right != ground) {
+    //    lower_right = ground;
+    //}
+
+    ////SINGLETONS
+    //if (upper_left == empty && upper_right == empty && lower_left == empty && lower_right == empty) {
+    //    return;
+    //}
+    //if (upper_left == ground && upper_right == ground && lower_left == ground && lower_right == ground) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){0,0,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == wall && upper_right == wall && lower_left == wall && lower_right == wall) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){32,0,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+
+    //// GROUND X EMPTY 
+
+    //// 1 GROUND X 3 EMPTY 
+    //if (upper_left == ground && upper_right == empty && lower_left == empty && lower_right == empty) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){16,32,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == empty && upper_right == ground && lower_left == empty && lower_right == empty) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){0,32,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == empty && upper_right == empty && lower_left == ground && lower_right == empty) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){16,16,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == empty && upper_right == empty && lower_left == empty && lower_right == ground) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){0,16,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+
+    //// 2 GROUND 2 EMPTY, not diagonal
+    //if (upper_left == ground && upper_right == ground && lower_left == empty && lower_right == empty) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){0,64,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == empty && upper_right == empty && lower_left == ground && lower_right == ground) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){0,48,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == ground && upper_right == empty && lower_left == ground && lower_right == empty) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){16,64,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == empty && upper_right == ground && lower_left == empty && lower_right == ground) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){16,48,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+
+    //// 3 GROUND 1 EMPTY
+    //if (upper_left == empty && upper_right == ground && lower_left == ground && lower_right == ground) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){16,96,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == ground && upper_right == empty && lower_left == ground && lower_right == ground) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){0,96,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == ground && upper_right == ground && lower_left == empty && lower_right == ground) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){16,80,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == ground && upper_right == ground && lower_left == ground && lower_right == empty) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){0,80,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+
+    //// WALL X EMPTY 
+
+    //// 1 wall X 3 EMPTY 
+    //if (upper_left == wall && upper_right == empty && lower_left == empty && lower_right == empty) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){48,32,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == empty && upper_right == wall && lower_left == empty && lower_right == empty) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){32,32,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == empty && upper_right == empty && lower_left == wall && lower_right == empty) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){48,16,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == empty && upper_right == empty && lower_left == empty && lower_right == wall) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){32,16,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+
+    //// 2 wall 2 EMPTY, not diagonal
+    //if (upper_left == wall && upper_right == wall && lower_left == empty && lower_right == empty) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){32,64,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == empty && upper_right == empty && lower_left == wall && lower_right == wall) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){32,48,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == wall && upper_right == empty && lower_left == wall && lower_right == empty) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){48,64,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == empty && upper_right == wall && lower_left == empty && lower_right == wall) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){48,48,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+
+    //// 3 wall 1 EMPTY
+    //if (upper_left == empty && upper_right == wall && lower_left == wall && lower_right == wall) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){48,96,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == wall && upper_right == empty && lower_left == wall && lower_right == wall) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){32,96,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == wall && upper_right == wall && lower_left == empty && lower_right == wall) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){48,80,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == wall && upper_right == wall && lower_left == wall && lower_right == empty) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){32,80,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //
+
+    //// WALL X ground 
+
+    //// 1 WALL X 3 GROUND 
+    //if (upper_left == wall && upper_right == ground && lower_left == ground && lower_right == ground) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){80,32,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == ground && upper_right == wall && lower_left == ground && lower_right == ground) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){64,32,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == ground && upper_right == ground && lower_left == wall && lower_right == ground) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){80,16,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == ground && upper_right == ground && lower_left == ground && lower_right == wall) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){64,16,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+
+    //// 2 WALL 2 GROUND, NOT DIAGONAL
+    //if (upper_left == wall && upper_right == wall && lower_left == ground && lower_right == ground) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){64,64,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == ground && upper_right == ground && lower_left == wall && lower_right == wall) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){64,48,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == wall && upper_right == ground && lower_left == wall && lower_right == ground) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){80,64,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == ground && upper_right == wall && lower_left == ground && lower_right == wall) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){80,48,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+
+    //// 3 WALL 1 GROUND
+    //if (upper_left == ground && upper_right == wall && lower_left == wall && lower_right == wall) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){80,96,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == wall && upper_right == ground && lower_left == wall && lower_right == wall) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){64,96,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == wall && upper_right == wall && lower_left == ground && lower_right == wall) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){80,80,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == wall && upper_right == wall && lower_left == wall && lower_right == ground) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){64,80,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+
+    //// 2 EMPTY 1 GROUND 1 WALL
+    //if (upper_left == ground && upper_right == wall && lower_left == empty && lower_right == empty) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){112,16,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == wall && upper_right == ground && lower_left == empty && lower_right == empty) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){112,48,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+
+    //if (upper_left == empty && upper_right == empty && lower_left == wall && lower_right == ground) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){112,32,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == empty && upper_right == empty && lower_left == ground && lower_right == wall) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){112,64,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+
+    //if (upper_left == empty && upper_right == ground && lower_left == empty && lower_right == wall) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){96,16,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == empty && upper_right == wall && lower_left == empty && lower_right == ground) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){96,48,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+
+    //if (upper_left == wall && upper_right == empty && lower_left == ground && lower_right == empty) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){96,32,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == ground && upper_right == empty && lower_left == wall && lower_right == empty) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){96,64,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+
+    ////DIAGONAL
+    //if (upper_left == ground && upper_right == empty && lower_left == empty && lower_right == wall) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){112,96,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == wall && upper_right == empty && lower_left == empty && lower_right == ground) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){96,80,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+
+    //if (upper_left == empty && upper_right == ground && lower_left == wall && lower_right == empty) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){96,96,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == empty && upper_right == wall && lower_left == ground && lower_right == empty) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){112,80,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+
+    //// 1 EMPTY 1 GROUND 2 WALL
+    //if (upper_left == wall && upper_right == empty && lower_left == wall && lower_right == ground) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){128,16,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == empty && upper_right == wall && lower_left == ground && lower_right == wall) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){144,16,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == wall && upper_right == ground && lower_left == wall && lower_right == empty) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){128,32,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == ground && upper_right == wall && lower_left == empty && lower_right == wall) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){144,32,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    // 
+    //if (upper_left == wall && upper_right == wall && lower_left == empty && lower_right == ground) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){128,48,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == wall && upper_right == wall && lower_left == ground && lower_right == empty) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){144,48,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == empty && upper_right == ground && lower_left == wall && lower_right == wall) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){128,64,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == ground && upper_right == empty && lower_left == wall && lower_right == wall) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){144,64,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+
+    ////some of the 2 ground 1 wall 1 empty cases
+    //if (upper_left == ground && upper_right == empty && lower_left == ground && lower_right == wall) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){144,0,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == empty && upper_right == ground && lower_left == wall && lower_right == ground) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){160,0,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == ground && upper_right == wall && lower_left == ground && lower_right == empty) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){176,0,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //if (upper_left == wall && upper_right == ground && lower_left == empty && lower_right == ground) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){192,0,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    //// Annoying edge cases
+    //if (upper_left == wall && upper_right == ground && lower_left == ground && lower_right == empty) {
+    //    DrawTexturePro(STATIC_SHEET, (Rectangle){128,0,16,16}, (Rectangle){starting_x + x * cell_size + cell_size / 2, starting_y + cell_size * y + cell_size / 2,cell_size,cell_size}, (Vector2){0.0, 0.0}, 0, WHITE);
+    //    return;
+    //}
+    return;
+}
+
 //MOVEMENT 
 
 //return true if error
@@ -758,6 +1237,9 @@ bool push(int loc, int offset){
 
 //We will only interact with items on our level, and the trust state_update to do gravity based interactions
 bool push_wrapped(int loc, int offset, int depth){
+    if (depth == 1 && (gs.lower_entities[loc] == empty || gs.lower_entities[loc] == pit)) {
+        return false; //Anti suicide
+    }
     //This stops you when you are inside the wall
     if (gs.middle_entities[loc] == red_wall || gs.middle_entities[loc] == indigo_wall || gs.middle_entities[loc] == blue_wall) {
         return false;
