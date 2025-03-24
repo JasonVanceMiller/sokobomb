@@ -69,9 +69,6 @@ game_state level_load(const char*);
 
 void state_draw();
 void entity_draw_dispatch_dynamic(int loc, int x, int y, int cell_size, entity_id e);
-void entity_draw_dispatch_hole(int loc, int x, int y, int cell_size, entity_id e);
-void entity_draw_dispatch_pit(int loc, int x, int y, int cell_size, entity_id e);
-void entity_draw_dispatch_static(int x, int y, int starting_x, int starting_y, int cell_size);
 void entity_draw_dispatch(int x, int y, int starting_x, int starting_y, int cell_size, entity_id (*entities)[500]);
 
 bool state_move(action move);
