@@ -1,26 +1,25 @@
 
-const char* level_test = 
-"....................\n"
-".____...............\n"
-"._F__...............\n"
-".____...............\n"
-"....................\n"
-"........WWWWWW......\n"
-"..W____._____W......\n"
-"..W____._____W......\n"
-"..WWWWW.___._W......\n"
-"........W____W......\n"
-"........W____W......\n"
-"....................\n"
-"..........W.W.......\n"
-"..........._........\n"
-"..........W.W.......\n"
-"....................";
+const char* level_island_maze = 
+"F___.____.____.____\n"
+"_WW_._WW_._W__._WW_\n"
+"_W__._W__._WW_.__W_\n"
+"____.____.____.____\n"
+"...................\n"
+"____.____.____.____\n"
+"_WW_._WW_._W__.__W_\n"
+"__W_.__W_._WW_._WW_\n"
+"____.____.____.____\n"
+"...................\n"
+"____.____.____.____\n"
+"_WW_._W__._WW_._WW_\n"
+"__W_._WW_.__W_._W__\n"
+"____.____.____.____\n"
+"...................\n"
+"____.____.____.____\n"
+"_WW_._WW_._WW_.__W_\n"
+"_W__.__W_._W__._WW_\n"
+"____.____.____.___#";
 
-const char* level_island2 = 
-"___........\n"
-"WF_._m_._#W\n"
-"___........";
 
 const char* level_island3 = 
 "W_.W_\n"
@@ -72,7 +71,7 @@ const char* level_huh =
 
 const char* level_huh2 = 
 "....................\n"
-"......._WWWWW.......\n"
+".......____WW.......\n"
 "......._____W.......\n"
 "......._m_%_W.......\n"
 "......._____W.......\n"
@@ -83,18 +82,20 @@ const char* level_huh2 =
 "....W_____..........\n"
 "....W_F___..........\n"
 "....W_____..........\n"
-"....WWWW__..........\n"
+"....W_____..........\n"
 "....................\n"
 "....................\n"
 "....................\n"
 "....................";
 
 const char* level_halfmeasures = 
-"W___.......___W\n"
-"W_r_.......___W\n"
+"WWWW.WWWWW.WWWW\n"
+"W___.WR___.___W\n"
+"W_r_.WR___.___W\n"
 "W_F_._R_#_.___W\n"
-"W_m_.......___W\n"
-"W___.......___W";
+"W_m_._R___.___W\n"
+"W___._R___.___W\n"
+"WWWW.WWWWW.WWWW";
 
 const char* level_island = 
 ".....___.\n"
@@ -110,27 +111,92 @@ const char* level_island =
 "_W_._W_..\n"
 "_#_._F_..";
 
+const char* level_ibox2 = 
+"WWWWWWWWW\n"
+"WPPPPPPPW\n"
+"W_______W\n"
+"W_r_m_F_W\n"
+"W_______W\n"
+".........\n"
+"W_______W\n"
+"W_R___#_W\n"
+"W_______W\n"
+".........";
+
+const char* level_ibox3 = 
+".........\n"
+"W___r___W\n"
+"W_____F_W\n"
+"W_______W\n"
+"WPPPPPPPW\n"
+"WPPPPPPPW\n"
+"WPPPPPPPW\n"
+"W_m_____W\n"
+"W___%___W\n"
+"W_______W\n"
+".........";
+
+const char* level_ibox4 = 
+".........\n"
+"W_______W\n"
+"W___r_F_W\n"
+"W_______W\n"
+"WPPPPPPPW\n"
+"WPPPPPPPW\n"
+"WPPPPPPPW\n"
+"W_m___m_W\n"
+"W___%___W\n"
+"W_______W\n"
+".........";
+
+const char* level_ibox5 = 
+".........\n"
+"W_______W\n"
+"W___r_F_W\n"
+"W_______W\n"
+"WPPPPPPPW\n"
+"WPPPPPPPW\n"
+"WPPPPPPPW\n"
+"W_______W\n"
+"W_m_%___W\n"
+"W_______W\n"
+".........";
+
 const char* level_callback = 
-".._____..\n"
+"...WWW...\n"
+"...___...\n"
 "W_______W\n"
-"W__mrm__W\n"
+"W__m_r__W\n"
 "W_______W\n"
-".._____..\n"
+"...___...\n"
 ".........\n"
+"...___...\n"
+"W_______W\n"
+"W__F_%__W\n"
+"W_______W\n"
+"...___...";
+
+const char* level_pit_bridge = 
 ".........\n"
-".._____..\n"
+"...___...\n"
 "W_______W\n"
-"W___F_%_W\n"
+"W__m_r__W\n"
 "W_______W\n"
-".._____..";
+"...___...\n"
+"....P....\n"
+"...___...\n"
+"W_______W\n"
+"W__F_%__W\n"
+"W.......W\n"
+".........";
 
 const char* level_callback2 = 
+".........\n"
 "...___...\n"
 "W_______W\n"
 "W__mrm__W\n"
 "W_______W\n"
 "...___...\n"
-".........\n"
 ".........\n"
 "...___...\n"
 "W_______W\n"
@@ -432,13 +498,22 @@ const char* level_unlock_xx =
 ".W%F_W.\n"
 ".WWWWW.";
 
+//EXPLOIT
 const char* level_unlock_xxx = 
+".WWWWWW\n"
+"WWWP__W\n"
+"WrBb__W\n"
+"WWWm_WW\n"
+".W%F_W.\n"
+".WWWWW.";
+
+//EXPLOIT
+const char* level_unlock_xxxx = 
 "WWWWWW\n"
-"WrW__W\n"
-"WBb__W\n"
-"WWm_WW\n"
-"W%F_W.\n"
-"WWWWW.";
+"WrBb_W\n"
+"WWWm_W\n"
+".W%F_W\n"
+".WWWWW";
 
 const char* level_unlock_variant = 
 "WWWWWWWWWW.\n"
@@ -464,14 +539,6 @@ const char* level_locked_explode =
 "W___F___W\n"
 "W_%_r_r_W\n"
 "W_______W\n"
-"WWWWWWWWW";
-
-const char* level_locked_explode2 = 
-"WWWWWW...\n"
-"W__bBWWWW\n"
-"W__W_bm_W\n"
-"W_F_r___W\n"
-"W%______W\n"
 "WWWWWWWWW";
 
 const char* level_locked_explode3 = 

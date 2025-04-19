@@ -35,6 +35,8 @@ struct game_state {
     int width;
     int height;
     int depth;
+    int explosion_position;
+    int explosion_expiration;
     //lower entities are floor stuffs
     entity_id lower_entities[500]; //TODO
     //middle entites are the gates
@@ -51,8 +53,9 @@ struct game_state_history {
 typedef struct game_state_history game_state_history;
 //GLOBALS
 
-extern game_state levels[34];
+extern game_state levels[50];
 extern int level_index;
+extern int level_max;
 extern game_state gs;
 extern game_state_history* gsh;
 
@@ -68,7 +71,7 @@ static int PADDING  = 100;
 game_state level_load(const char*);
 
 void state_draw();
-void entity_draw_dispatch_dynamic(int loc, int x, int y, int cell_size, entity_id e);
+void draw_explosion(int x, int y, int starting_x, int starting_y, int cell_size);
 void entity_draw_dispatch(int x, int y, int starting_x, int starting_y, int cell_size, entity_id (*entities)[500]);
 
 bool state_move(action move);
@@ -80,7 +83,7 @@ void state_update();
 
 bool check_plates(entity_id); //id of plate type
 bool check_win();
-void win_screen();
+void win_screen(int x_offset, int y_offset);
 
 void game_state_history_clear();
 void game_state_history_clear_wrapped(game_state_history*);

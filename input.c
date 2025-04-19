@@ -2,13 +2,10 @@
 
 ////FUNCTIONS
 void button_update(button* b, bool press) {
-    if (*b == released) {
-        *b = none;
-    }
     if (*b == pressed) {
         *b = held;
     }
-    if (*b == none && press) {
+    if (*b == released && press) {
         *b = pressed;
     }
     if (*b == held && !press) {
