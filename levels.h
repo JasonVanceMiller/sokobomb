@@ -114,53 +114,18 @@ const char* level_island =
 const char* level_ibox2 = 
 "WWWWWWWWW\n"
 "WPPPPPPPW\n"
+"WPPPPPPPW\n"
 "W_______W\n"
 "W_r_m_F_W\n"
 "W_______W\n"
-".........\n"
+"WPPPPPPPW\n"
+"WPPPPPPPW\n"
 "W_______W\n"
 "W_R___#_W\n"
 "W_______W\n"
-".........";
-
-const char* level_ibox3 = 
-".........\n"
-"W___r___W\n"
-"W_____F_W\n"
-"W_______W\n"
 "WPPPPPPPW\n"
 "WPPPPPPPW\n"
-"WPPPPPPPW\n"
-"W_m_____W\n"
-"W___%___W\n"
-"W_______W\n"
-".........";
-
-const char* level_ibox4 = 
-".........\n"
-"W_______W\n"
-"W___r_F_W\n"
-"W_______W\n"
-"WPPPPPPPW\n"
-"WPPPPPPPW\n"
-"WPPPPPPPW\n"
-"W_m___m_W\n"
-"W___%___W\n"
-"W_______W\n"
-".........";
-
-const char* level_ibox5 = 
-".........\n"
-"W_______W\n"
-"W___r_F_W\n"
-"W_______W\n"
-"WPPPPPPPW\n"
-"WPPPPPPPW\n"
-"WPPPPPPPW\n"
-"W_______W\n"
-"W_m_%___W\n"
-"W_______W\n"
-".........";
+"WWWWWWWWW";
 
 const char* level_callback = 
 "...WWW...\n"
@@ -235,15 +200,12 @@ const char* level_unstable2 =
 "....WWWWWW";
 
 const char* level_unstable3 = 
-"W___.__W\n"
-"W_F_._RW\n"
-"W___.__W\n"
-"W_%_....\n"
-"W___....\n"
-"W_m_....\n"
-"W___....\n"
-"WWWW....\n"
-"........\n"
+"WWWWWWWW\n"
+"W___PPPW\n"
+"W_F_P__W\n"
+"W_m_P_%W\n"
+"W___P__W\n"
+"WWWWPPPW\n"
 "W______W\n"
 "W__m___W\n"
 "W__rr__W\n"
@@ -252,24 +214,35 @@ const char* level_unstable3 =
 
 const char* level_platform = 
 "WWWWWWWWWWWWWWWWWWWWW\n"
-"WPPPPPPPPPPPPPPPPPPPW\n"
 "WP_____PR____P____RPW\n"
 "WP_F___PR____P____RPW\n"
 "WP___r_PR_W__P__#_RPW\n"
 "WP_m___PR____P____RPW\n"
 "WP_____PR____P____RPW\n"
-"WPPPPPPPPPPPPPPPPPPPW\n"
 "WWWWWWWWWWWWWWWWWWWWW";
 
 const char* level_platform2 = 
 "WWWWWWWWWWWWWWWWWWWWW\n"
-"WPPPPPPPPPPPPPPPPPPPW\n"
 "WP_____PR____P_____PW\n"
 "WP_F___PR____P_____PW\n"
 "WP___r_PR_W__P__#__PW\n"
 "WP_m___PR____P_____PW\n"
 "WP_____PR____P_____PW\n"
-"WPPPPPPPPPPPPPPPPPPPW\n"
+"WWWWWWWWWWWWWWWWWWWWW";
+
+const char* level_idk_dude = 
+"WWWWWWWWWWWWWWWWWWWWW\n"
+"WWWWWWWWWWWWWWWWWWWWW\n"
+"WWW__WWWWWWW__WWWWWWW\n"
+"WWW____r_r____WWWWWWW\n"
+"WWWW_________WWWWWWWW\n"
+"WWWWPPPPPPPPPWWWWWWWW\n"
+"WWWW___F_%___WWWWWWWW\n"
+"WWWW_________WWWWWWWW\n"
+"WWW____m_m____WWWWWWW\n"
+"WWW__WWWWWWW__WWWWWWW\n"
+"WWWWWWWWWWWWWWWWWWWWW\n"
+"WWWWWWWWWWWWWWWWWWWWW\n"
 "WWWWWWWWWWWWWWWWWWWWW";
 
 const char* level_first = 
@@ -585,3 +558,15 @@ const char* level_quirky3 =
 "WW__W___W%WW\n"
 ".W__WWWWWWW.\n"
 ".WWWW.......";
+
+const char* level_quirky4 = 
+"WWWW..\n"
+"W__W..\n"
+"W%mW..\n"
+"WPPWWW\n"
+"W_F__W\n"
+"Wx_b_W\n"
+"W____W\n"
+"Wm_WWW\n"
+"W_PW..\n"
+"WWWW..";

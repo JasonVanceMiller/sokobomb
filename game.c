@@ -82,6 +82,11 @@ game_state level_load(const char* level){
                 out_gs.middle_entities[loc] = red_marker;
                 out_gs.upper_entities[loc] = empty;
             break;
+            case '&':
+                out_gs.lower_entities[loc] = goal;
+                out_gs.middle_entities[loc] = blue_marker;
+                out_gs.upper_entities[loc] = empty;
+            break;
             case 'r':
                 out_gs.lower_entities[loc] = red_plate;
                 out_gs.middle_entities[loc] = empty;
