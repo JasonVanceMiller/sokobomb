@@ -93,7 +93,9 @@ int main() {
     levels[level_max++] = level_load(level_unlock_variant);
 
     levels[level_max++] = level_load(level_quirky);
-    levels[level_max++] = level_load(level_quirky4);
+    levels[level_max++] = level_load(level_quirky2);
+    levels[level_max++] = level_load(level_quirky3);
+    //levels[level_max++] = level_load(level_quirky4);
 
     
     level_index = 0;

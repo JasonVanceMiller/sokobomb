@@ -473,27 +473,28 @@ const char* level_unlock_xx =
 
 //EXPLOIT
 const char* level_unlock_xxx = 
-".WWWWWW\n"
-"WWWP__W\n"
-"WrBb__W\n"
+"WWWWWWW\n"
+"WrWP__W\n"
+"WBb___W\n"
 "WWWm_WW\n"
-".W%F_W.\n"
-".WWWWW.";
+"WW%F_W.\n"
+"WWWWWW.";
 
 //EXPLOIT
 const char* level_unlock_xxxx = 
-"WWWWWW\n"
-"WrBb_W\n"
-"WWWm_W\n"
-".W%F_W\n"
-".WWWWW";
+"WWW..\n"
+"WrWWW\n"
+"WBb_W\n"
+"WWm_W\n"
+"W%F_W\n"
+"WWWWW";
 
 const char* level_unlock_variant = 
-"WWWWWWWWWW.\n"
-"WrW__W___WW\n"
+"..WWWWWWWW.\n"
+"WWW__W___WW\n"
 "WBb__P_m_%W\n"
-"WWWm_W___WW\n"
-"..WF_WWWWW.\n"
+"WrWm_W___WW\n"
+"WWWF_WWWWW.\n"
 "..WWWW.....";
 
 const char* level_unlock2 = 
@@ -561,6 +562,7 @@ const char* level_quirky3 =
 
 const char* level_quirky4 = 
 "WWWW..\n"
+"W_PW..\n"
 "W__W..\n"
 "W%mW..\n"
 "WPPWWW\n"
