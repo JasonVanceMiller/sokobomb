@@ -184,7 +184,7 @@ void state_draw(){
 
 void draw_explosion(int x, int y, int starting_x, int starting_y, int cell_size) {
     if (!SPACED_SPRITE_SHEET_INIT) {
-        SPACED_SPRITE_SHEET = LoadTexture("spaced_sprite_sheet.png");
+        SPACED_SPRITE_SHEET = LoadTexture("art/spaced_sprite_sheet.png");
         SPACED_SPRITE_SHEET_INIT = true;
     }
     DrawTexturePro(SPACED_SPRITE_SHEET, (Rectangle){144,48,48,48}, (Rectangle){starting_x + x * cell_size - cell_size, starting_y + y * cell_size - cell_size, cell_size * 3, cell_size * 3}, (Vector2){0.0, 0.0}, 0, WHITE);
@@ -193,7 +193,7 @@ void draw_explosion(int x, int y, int starting_x, int starting_y, int cell_size)
 
 void entity_draw_dispatch(int x, int y, int starting_x, int starting_y, int cell_size, entity_id (*entities)[500]){
     if (!SPACED_SPRITE_SHEET_INIT) {
-        SPACED_SPRITE_SHEET = LoadTexture("spaced_sprite_sheet.png");
+        SPACED_SPRITE_SHEET = LoadTexture("art/spaced_sprite_sheet.png");
         SPACED_SPRITE_SHEET_INIT = true;
     }
     //upper left, then upper right, then lower left, then lower right
