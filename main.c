@@ -51,24 +51,28 @@ int main() {
     //INTRO TO BOXES FOR MOVEMENT 
     
     //INTRO TO BOXES ON PLATES
-    levels[level_max++] = level_load(level_plate);
-    levels[level_max++] = level_load(level_plate3);
-    levels[level_max++] = level_load(level_plate2);
+    levels[level_max++] = level_load(level_plate_agg);
+    //levels[level_max++] = level_load(level_plate);
+    //levels[level_max++] = level_load(level_plate3);
+    //levels[level_max++] = level_load(level_plate2);
     levels[level_max++] = level_load(level_box);
+    levels[level_max++] = level_load(level_box_);
     levels[level_max++] = level_load(level_box2);
     levels[level_max++] = level_load(level_box3);
     levels[level_max++] = level_load(level_box4);
     levels[level_max++] = level_load(level_box5);
-    levels[level_max++] = level_load(level_ibox2);
+    levels[level_max++] = level_load(level_box6);
+    
+    //levels[level_max++] = level_load(level_ibox2); //GOOD LEVEL, but out of place
 
 
     //UNSTICKING A BOX
     levels[level_max++] = level_load(level_stuck);
-    levels[level_max++] = level_load(level_stuck2);
-    levels[level_max++] = level_load(level_zigzag);
+    //levels[level_max++] = level_load(level_stuck2); Redundant
+    //levels[level_max++] = level_load(level_zigzag);
     levels[level_max++] = level_load(level_zigzag2);
-    levels[level_max++] = level_load(level_good);
-    levels[level_max++] = level_load(level_halved);
+    //levels[level_max++] = level_load(level_good);
+    //levels[level_max++] = level_load(level_halved);
     levels[level_max++] = level_load(level_bridge);
 
     //ISLAND, UNDER CONSTRUCTION
@@ -77,24 +81,25 @@ int main() {
     //levels[level_max++] = level_load(level_island_maze);
     //levels[level_max++] = level_load(level_island3);
     //levels[level_max++] = level_load(level_pit_bridge);
-    levels[level_max++] = level_load(level_unstable3);
+    //levels[level_max++] = level_load(level_unstable3);
 
     //MULTI COLORED
 
-    levels[level_max++] = level_load(level_multi);
-    levels[level_max++] = level_load(level_locked_explode);
-    levels[level_max++] = level_load(level_locked_explode3);
-    levels[level_max++] = level_load(level_block_free);
+    //levels[level_max++] = level_load(level_multi);
+    //levels[level_max++] = level_load(level_locked_explode);
+    levels[level_max++] = level_load(level_locked_explode2);
+    //levels[level_max++] = level_load(level_locked_explode3);
+    levels[level_max++] = level_load(level_cannon);
 
     levels[level_max++] = level_load(level_unlock2);
     //levels[level_max++] = level_load(level_unlock_xx);
     levels[level_max++] = level_load(level_unlock_xxxx);
     levels[level_max++] = level_load(level_unlock_xxx);
-    levels[level_max++] = level_load(level_unlock_variant);
+    //levels[level_max++] = level_load(level_unlock_variant);
 
     levels[level_max++] = level_load(level_quirky);
-    levels[level_max++] = level_load(level_quirky2);
-    levels[level_max++] = level_load(level_quirky3);
+    //levels[level_max++] = level_load(level_quirky2);
+    //levels[level_max++] = level_load(level_quirky3);
     //levels[level_max++] = level_load(level_quirky4);
 
     

@@ -582,13 +582,11 @@ void state_update(){
     }
 }
 
-//STATUS
-
 void win_screen(int x_offset, int y_offset){
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(GREEN);
-        DrawText("YOU WIN!!!! AMAZING JOB!!!!", x_offset - 350, y_offset, 40, BLACK);
+        DrawText("You Win! Thanks For Playing!", x_offset - 350, y_offset, 40, BLACK);
 
         EndDrawing();
     }

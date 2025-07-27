@@ -264,19 +264,34 @@ const char* level_gap =
 "WWWWWWWWW";
 
 const char* level_gaps = 
-".WWWWWWWW\n"
-".W__P___W\n"
-".W_FP___W\n"
-".W__P___W\n"
-".WWWWPPPW\n"
+"WWWWWWWWW\n"
+"W___P___W\n"
+"W_F_P___W\n"
+"W___P___W\n"
 "WWWWWPPPW\n"
 "W___P___W\n"
+"W___P_#_W\n"
+"W___P___W\n"
+"WPPPWPPPW\n"
 "W___P___W\n"
 "W___P___W\n"
+"W___P___W\n"
+"WWWWWWWWW";
+
+const char* level_plate_agg = 
+"WWWWWWWWW\n"
+"W___W___W\n"
+"WFr_R___W\n"
+"W___W___W\n"
+"WWWWWPPPW\n"
+"W___W___W\n"
+"W___Iii_W\n"
+"W___W___W\n"
 "WPPPWWWWW\n"
-"WPPPW....\n"
-"W_#_W....\n"
-"WWWWW....";
+"W___W___W\n"
+"W__bB_#PW\n"
+"W___W___W\n"
+"WWWWWWWWW";
 
 const char* level_plate = 
 "WWWWWWWWW\n"
@@ -309,6 +324,15 @@ const char* level_box =
 "WWWWWWW\n"
 "W_____W\n"
 "W_F_%_W\n"
+"W__m__W\n"
+"W_r_r_W\n"
+"W_____W\n"
+"WWWWWWW";
+
+const char* level_box_ = 
+"WWWWWWW\n"
+"W_____W\n"
+"W_Fr%_W\n"
 "W__m__W\n"
 "W_r_r_W\n"
 "W_____W\n"
@@ -364,11 +388,24 @@ const char* level_box5 =
 "W_______W\n"
 "WWWWWWWWW";
 
+const char* level_box6 = 
+"WWWWWWWWW\n"
+"W_______W\n"
+"W___r_F_W\n"
+"W___r___W\n"
+"WPPPPPPPW\n"
+"WPPPPPPPW\n"
+"WPPPPPPPW\n"
+"W_m___m_W\n"
+"W___%___W\n"
+"W_______W\n"
+"WWWWWWWWW";
+
 
 const char* level_stuck = 
 ".WWWWW.\n"
-".W___W.\n"
 ".W_%_W.\n"
+".W___W.\n"
 "WW___WW\n"
 "W__F__W\n"
 "W_r_r_W\n"
@@ -434,9 +471,9 @@ const char* level_multi =
 "WWWWWWWWWWWWW";
 
 const char* level_bridge = 
-".WWWW..\n"
-"WWPPW..\n"
-"W#PPWWW\n"
+".WWW...\n"
+"WWPW...\n"
+"W#PWWWW\n"
 "WWPPm_W\n"
 "WW_WWRW\n"
 "W_F_r_W\n"
@@ -471,16 +508,14 @@ const char* level_unlock_xx =
 ".W%F_W.\n"
 ".WWWWW.";
 
-//EXPLOIT
 const char* level_unlock_xxx = 
 "WWWWWWW\n"
 "WrWP__W\n"
 "WBb___W\n"
 "WWWm_WW\n"
-"WW%F_W.\n"
-"WWWWWW.";
+".W%F_W.\n"
+".WWWWW.";
 
-//EXPLOIT
 const char* level_unlock_xxxx = 
 "WWW..\n"
 "WrWWW\n"
@@ -498,22 +533,30 @@ const char* level_unlock_variant =
 "..WWWW.....";
 
 const char* level_unlock2 = 
-"WWWWWWW\n"
-"W_F__rW\n"
-"W_m_WRW\n"
-"W___WbW\n"
-"WWWWWBW\n"
-"....W%W\n"
-"....WWW";
+"WWWWWWWWW\n"
+"W_F__rB%W\n"
+"W_m_WRbWW\n"
+"W___WWWW.\n"
+"WWWWW....";
 
 const char* level_locked_explode = 
 "...WWW...\n"
 "WWWWBWWWW\n"
-"W__bbm__W\n"
+"W__bb_m_W\n"
 "W___F___W\n"
-"W_%_r_r_W\n"
+"W__rr_%_W\n"
 "W_______W\n"
 "WWWWWWWWW";
+
+const char* level_locked_explode2 = 
+"...WWW...\n"
+".WWWBWWW.\n"
+"WW_bbm_WW\n"
+"WP__F___W\n"
+"W#W_____W\n"
+"WWWWWWWWW\n"
+".........\n"
+".........";
 
 const char* level_locked_explode3 = 
 ".WWWWW...\n"
@@ -523,7 +566,7 @@ const char* level_locked_explode3 =
 "W%P__WWWW\n"
 "WWWWWW...";
 
-const char* level_block_free = 
+const char* level_cannon = 
 "WWWW....\n"
 "W__WWWWW\n"
 "W_mFBPrW\n"
