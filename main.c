@@ -10,7 +10,7 @@
 #include <unistd.h> // For sleep()
 
 //GLOBAL VARIABLES
-
+ 
 bool win_pause = false;
 
 game_state levels[50];
