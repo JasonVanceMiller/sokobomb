@@ -4,10 +4,10 @@
 #include "game.h"
 #include "levels.h"
 
-#include <stdio.h> 
-#include <stdlib.h> 
-#include <math.h> 
-#include <unistd.h> // For sleep() 
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <unistd.h> // For sleep()
 
 //GLOBAL VARIABLES
 
@@ -48,8 +48,8 @@ int main() {
     levels[level_max++] = level_load(level_first);
     levels[level_max++] = level_load(level_gap);
     levels[level_max++] = level_load(level_gaps);
-    //INTRO TO BOXES FOR MOVEMENT 
-    
+    //INTRO TO BOXES FOR MOVEMENT
+   
     //INTRO TO BOXES ON PLATES
     levels[level_max++] = level_load(level_plate_agg);
     //levels[level_max++] = level_load(level_plate);
